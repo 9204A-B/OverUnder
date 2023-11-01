@@ -22,7 +22,7 @@ arm = DigitalOut(brain.three_wire_port.h)
 pushers = DigitalOut(brain.three_wire_port.g)
 catapult_sense = Distance(Ports.PORT5)
 acorn_sense = Distance(Ports.PORT4)
-
+drivetrain.set_stopping(BRAKE)
 
 wait(30, MSEC)
 

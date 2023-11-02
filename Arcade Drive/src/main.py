@@ -171,12 +171,14 @@ def cat_distance():
         wait (5, MSEC)
 
 def acorn_distance():
-    global y, acorn
+    global acorn
     while True:
-        if acorn_sense.object_distance() <= 30 and acorn:
+        if acorn_sense.object_distance() <= 35 and acorn:
             intake.stop()
             wait(20, MSEC)
-        wait (5, MSEC)
+        elif acorn_sense.object_distance() >= 220 and acorn == False:
+            intake.stop()
+            wait (20, MSEC)
 
 def L1_pressed():
     catapult.spin(REVERSE)

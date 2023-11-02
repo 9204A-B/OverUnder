@@ -22,6 +22,7 @@ arm = DigitalOut(brain.three_wire_port.h)
 pushers = DigitalOut(brain.three_wire_port.g)
 catapult_sense = Distance(Ports.PORT5)
 acorn_sense = Distance(Ports.PORT4)
+Auton_select = DigitalIn(brain.three_wire_port.f)
 drivetrain.set_stopping(BRAKE)
 
 wait(30, MSEC)
@@ -101,9 +102,53 @@ y = 0
 i = 0
 p = 0
 acorn = False
+selector = 0
 
 def auton():
-    pass
+    global selector
+    # if selector == 0:
+        # Near side with hanging pole touch
+    # elif selector == 1:
+        # Far side with hanging pole touch
+    # elif selector == 2:
+        # Near side without hang
+    # elif selector == 3:
+        # Far side without hang
+    # else:
+        # Programming skills
+     
+def select():
+    global selector
+    if selector == 0:
+        brain.screen.print("Auton 1 Selected: Near side with hanging")
+        brain.screen.new_line()
+        brain.screen.print("pole touch")
+        brain.screen.new_line()
+        brain.screen.print("Press button to change Auton")
+    elif selector == 1:
+        brain.screen.print("Auton 2 Selected: Far side with hanging")
+        brain.screen.new_line()
+        brain.screen.print("pole touch")
+        brain.screen.new_line()
+        brain.screen.print("Press button to change Auton")
+    elif selector == 2:
+        brain.screen.print("Auton 3 Selected: Near side without hanging")
+        brain.screen.new_line()
+        brain.screen.print("pole touch")
+        brain.screen.new_line()
+        brain.screen.print("Press button to change Auton")
+    elif selector == 3:
+        brain.screen.print("Auton 4 Selected: Far side without hanging")
+        brain.screen.new_line()
+        brain.screen.print("pole touch")
+        brain.screen.new_line()
+        brain.screen.print("Press button to change Auton")
+    else:
+        brain.screen.print("Auton 5 Selected: Programming skills")
+        brain.screen.new_line()
+        brain.screen.print("Press button to change Auton")
+    wait (10, MSEC)
+
 
 def drive():
     pass
@@ -236,6 +281,27 @@ def brain_touch():
     wait (60, SECONDS)
     brain.screen.clear_screen()
 
+def button_pressed():
+    global selector
+    brain.screen.clear_screen()
+    brain.screen.set_cursor(1, 1)
+    if selector == 0:
+        selector = 1
+        wait (5, MSEC)
+    elif selector == 1:
+        selector = 2
+        wait (5, MSEC)
+    elif selector == 2:
+        selector = 3
+        wait (5, MSEC)
+    elif selector == 3:
+        selector = 4
+        wait (5, MSEC)
+    else:
+        selector = 0
+        wait (5, MSEC)
+    select()
+
 # system event handlers
 controller_1.buttonL1.pressed(L1_pressed)
 controller_1.buttonL1.released(L1_released)
@@ -247,7 +313,8 @@ controller_1.buttonA.pressed(A_pressed)
 controller_1.buttonA.released(A_released)
 controller_1.buttonX.pressed(X_pressed)
 controller_1.buttonX.released(X_released)
-brain.screen.pressed(brain_touch) 
+brain.screen.pressed(brain_touch)
+Auton_select.high(button_pressed)
 competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.
 wait(15, MSEC)

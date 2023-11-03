@@ -7,9 +7,9 @@ Avoid driving reverse because the robot can be unstable and lift possibly could 
 
 ## 11/2
 * Added button selector to cycle through Auton
-* Intake automatically stops after releasing triball
+* Intake automatically stops after releasing Triball
 
 ## 11/3
 * Added Auton: Near side with hanging pole touch
 
-Auton is consistent in scoring preload. Needs more testing on descoring matchload - try testing more specific placement and rotation of matchload
+Auton is consistent in scoring Preloads. Needs more testing on descoring matchload - try testing more specific placement and rotation of matchload

@@ -2,7 +2,6 @@
 from vex import *
 import urandom #type: ignore
 
-# Brain should be defined by default
 brain=Brain()
 
 # Robot configuration code

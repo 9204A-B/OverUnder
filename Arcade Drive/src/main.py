@@ -106,8 +106,33 @@ selector = 0
 
 def auton():
     global selector
-    # if selector == 0:
-        # Near side with hanging pole touch
+    if selector == 0: # Near side with hanging pole touch
+        drivetrain.set_drive_velocity(100, PERCENT)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.drive_for(FORWARD, 18, INCHES)
+        drivetrain.turn_for(RIGHT, 45, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        R2_pressed()
+        wait (200, MSEC)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 11, INCHES)
+        drivetrain.drive_for(FORWARD, 11, INCHES)
+        drivetrain.turn_for(RIGHT, 10, DEGREES)
+        arm.set(True)
+        drivetrain.turn_for(RIGHT, 125, DEGREES)
+        drivetrain.drive_for(REVERSE, 6, INCHES)
+        drivetrain.set_turn_velocity(50, PERCENT)
+        drivetrain.turn_for(RIGHT, 45, DEGREES)
+        arm.set(False)
+        drivetrain.turn_for(RIGHT, 205, DEGREES)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.drive_for(FORWARD, 8, INCHES)
+        drivetrain.turn_for(RIGHT, 75, DEGREES)
+        drivetrain.drive_for(FORWARD, 11.25, INCHES)
+        drivetrain.turn_for(LEFT, 73.5, DEGREES)
+        drivetrain.drive_for(FORWARD, 25, INCHES)
     # elif selector == 1:
         # Far side with hanging pole touch
     # elif selector == 2:
@@ -116,6 +141,7 @@ def auton():
         # Far side without hang
     # else:
         # Programming skills
+
      
 def select():
     global selector

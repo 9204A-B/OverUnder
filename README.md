@@ -13,3 +13,10 @@ Avoid driving reverse because the robot can be unstable and lift possibly could 
 * Added Auton: Near side with hanging pole touch
 
 Auton is consistent in scoring Preloads. Needs more testing on descoring matchload - try testing more specific placement and rotation of matchload
+
+## 11/6
+* Renamed R2_pressed() to acorn_release()
+* Renamed L1_pressed() to catapult_launch()
+* Renamed R1_pressed() to acorn_grab()
+* Renamed X_pressed() to push()
+* Renamed A_pressed() to arm_drop()

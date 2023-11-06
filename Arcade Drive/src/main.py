@@ -111,7 +111,7 @@ def auton():
         drivetrain.drive_for(FORWARD, 18, INCHES)
         drivetrain.turn_for(RIGHT, 45, DEGREES)
         drivetrain.drive_for(FORWARD, 5, INCHES)
-        R2_pressed()
+        acorn_release()
         wait (200, MSEC)
         drivetrain.drive_for(FORWARD, 10, INCHES)
         drivetrain.drive_for(REVERSE, 10, INCHES)
@@ -122,7 +122,6 @@ def auton():
         arm.set(True)
         drivetrain.turn_for(RIGHT, 125, DEGREES)
         drivetrain.drive_for(REVERSE, 6, INCHES)
-        drivetrain.set_turn_velocity(50, PERCENT)
         arm.set(False)
         drivetrain.turn_for(RIGHT, 250, DEGREES)
         drivetrain.drive_for(FORWARD, 8, INCHES)
@@ -130,8 +129,26 @@ def auton():
         drivetrain.drive_for(FORWARD, 11.25, INCHES)
         drivetrain.turn_for(LEFT, 73.5, DEGREES)
         drivetrain.drive_for(FORWARD, 25, INCHES)
-    # elif selector == 1:
-        # Far side with hanging pole touch
+    elif selector == 1: # Far side with hanging pole touch
+        drivetrain.set_drive_velocity(100, PERCENT)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.drive_for(FORWARD, 18, INCHES)
+        drivetrain.turn_for(LEFT, 45, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        acorn_release()
+        wait (200, MSEC)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(LEFT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 11, INCHES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 15, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        acorn_release()
+        drivetrain.drive_for(FORWARD, 20, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
     # elif selector == 2:
         # Near side without hang
     # elif selector == 3:
@@ -172,7 +189,6 @@ def select():
         brain.screen.print("Press button to change Auton")
     wait (10, MSEC)
 
-
 def drive():
     pass
 
@@ -182,6 +198,7 @@ def when_started1():
     intake.set_velocity(100, PERCENT)
     pushers.set(False)
     arm.set(False)
+    select()
 
 def cat_distance():
     while True:
@@ -192,7 +209,7 @@ def cat_distance():
         else:
             catapult.set_velocity(50, PERCENT)
         wait (5, MSEC)
-
+        
 def acorn_distance():
     global acorn
     while True:
@@ -203,10 +220,10 @@ def acorn_distance():
             intake.stop()
             wait (20, MSEC)
 
-def L1_pressed():
+def catapult_launch():
     catapult.spin(REVERSE)
 
-def R2_pressed():
+def acorn_release():
     global y, acorn
     if y == 0:
         acorn = False
@@ -225,7 +242,7 @@ def R2_released():
         y = 0
         wait(5, MSEC)
 
-def R1_pressed():
+def acorn_grab():
     global x, acorn
     if x == 0:
         acorn = True
@@ -248,7 +265,7 @@ def R1_released():
 def L1_released():
     catapult.stop()
 
-def X_pressed():
+def push():
     global i
     if i == 0:
         pushers.set(True)
@@ -266,7 +283,7 @@ def X_released():
         i = 0
         wait(5, MSEC)
 
-def A_pressed():
+def arm_drop():
     global p
     if p == 0:
         arm.set(True)
@@ -328,17 +345,17 @@ def button_pressed():
     select()
 
 # system event handlers
-controller_1.buttonL1.pressed(L1_pressed)
+controller_1.buttonL1.pressed(catapult_launch)
 controller_1.buttonL1.released(L1_released)
-controller_1.buttonR1.pressed(R1_pressed)
+controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)
-controller_1.buttonR2.pressed(R2_pressed)
+controller_1.buttonR2.pressed(acorn_release)
 controller_1.buttonR2.released(R2_released)
-controller_1.buttonA.pressed(A_pressed)
+controller_1.buttonA.pressed(arm_drop)
 controller_1.buttonA.released(A_released)
-controller_1.buttonX.pressed(X_pressed)
+controller_1.buttonX.pressed(push)
 controller_1.buttonX.released(X_released)
-brain.screen.pressed(brain_touch)
+brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.

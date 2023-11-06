@@ -146,10 +146,20 @@ def auton():
         drivetrain.turn_for(RIGHT, 90, DEGREES)
         drivetrain.drive_for(FORWARD, 15, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
-        acorn_release()
+        acorn_grab()
         drivetrain.drive_for(FORWARD, 20, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
+        acorn_release()
         drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 5, INCHES)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        acorn_grab()
+        drivetrain.drive_for(FORWARD, 20, INCHES)
+        drivetrain.drive_for(REVERSE, 5, INCHES)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        acorn_release()
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+
     # elif selector == 2:
         # Near side without hang
     # elif selector == 3:

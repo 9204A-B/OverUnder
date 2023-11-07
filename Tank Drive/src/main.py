@@ -103,13 +103,14 @@ i = 0
 p = 0
 acorn = False
 selector = 0
+auto = False
 
 def auton():
     global selector
     if selector == 0: # Near side with hanging pole touch
         drivetrain.set_drive_velocity(100, PERCENT)
         drivetrain.set_turn_velocity(35, PERCENT)
-        drivetrain.drive_for(FORWARD, 18, INCHES)
+        drivetrain.drive_for(FORWARD, 17.5, INCHES)
         drivetrain.turn_for(RIGHT, 45, DEGREES)
         drivetrain.drive_for(FORWARD, 5, INCHES)
         acorn_release()
@@ -133,7 +134,8 @@ def auton():
     elif selector == 1: # Far side with hanging pole touch
         drivetrain.set_drive_velocity(100, PERCENT)
         drivetrain.set_turn_velocity(35, PERCENT)
-        drivetrain.drive_for(FORWARD, 18, INCHES)
+        drivetrain.set_stopping(BRAKE)
+        drivetrain.drive_for(FORWARD, 17.5, INCHES)
         drivetrain.turn_for(LEFT, 45, DEGREES)
         drivetrain.drive_for(FORWARD, 5, INCHES)
         acorn_release()
@@ -144,17 +146,18 @@ def auton():
         drivetrain.drive_for(REVERSE, 11, INCHES)
         drivetrain.drive_for(FORWARD, 5, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
-        drivetrain.drive_for(FORWARD, 15, INCHES)
+        drivetrain.drive_for(FORWARD, 30, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
         acorn_grab()
-        drivetrain.drive_for(FORWARD, 20, INCHES)
+        drivetrain.drive_for(FORWARD, 35, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
         acorn_release()
-        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(FORWARD, 15, INCHES)
         drivetrain.drive_for(REVERSE, 5, INCHES)
         drivetrain.turn_for(RIGHT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 5, INCHES)
         acorn_grab()
-        drivetrain.drive_for(FORWARD, 20, INCHES)
+        drivetrain.drive_for(FORWARD, 25, INCHES)
         drivetrain.drive_for(REVERSE, 5, INCHES)
         drivetrain.turn_for(RIGHT, 180, DEGREES)
         acorn_release()
@@ -212,14 +215,23 @@ def when_started1():
     select()
 
 def cat_distance():
+    global auto
     while True:
-        if catapult_sense.object_distance() <= 55:
+        if catapult_sense.object_distance() <= 55 and auto == False:
             catapult.stop()
             catapult.set_velocity(0, PERCENT)
             wait (5, MSEC)
+        elif catapult_sense.object_distance() <= 65 and auto:
+            catapult.stop()
+            catapult.set_velocity(0, PERCENT)
+            if controller_1.buttonL1.pressing():
+                catapult.set_velocity(50, PERCENT)
+                catapult.spin(REVERSE)
+                wait (250, MSEC)
+                auto = False
         else:
             catapult.set_velocity(50, PERCENT)
-            if controller_1.buttonL1.pressing():
+            if controller_1.buttonL2.pressing():
                 catapult.spin(REVERSE)
         wait (5, MSEC)
         
@@ -233,8 +245,15 @@ def acorn_distance():
             intake.stop()
             wait (20, MSEC)
 
-def catapult_launch():
+def manual_catapult_launch():
+    global auto
+    auto = False
     catapult.spin(REVERSE)
+
+def auto_catapult_launch():
+    global auto
+    auto = True
+    catapult.spin_for(REVERSE, 75)
 
 def acorn_release():
     global y, acorn
@@ -275,7 +294,7 @@ def R1_released():
         x = 0
         wait(5, MSEC)
 
-def L1_released():
+def L2_released():
     catapult.stop()
 
 def push():
@@ -358,8 +377,9 @@ def button_pressed():
     select()
 
 # system event handlers
-controller_1.buttonL1.pressed(catapult_launch)
-controller_1.buttonL1.released(L1_released)
+controller_1.buttonL2.pressed(manual_catapult_launch)
+controller_1.buttonL2.released(L2_released)
+controller_1.buttonL1.pressed(auto_catapult_launch)
 controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)
 controller_1.buttonR2.pressed(acorn_release)

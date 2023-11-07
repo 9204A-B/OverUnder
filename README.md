@@ -26,6 +26,7 @@ Auton is consistent in scoring Preloads. Needs more testing on descoring matchlo
 ### 11/7
 * Added automatic and manual controls for catapult launching
 * Added Auton: Far side with hanging pole touch
+
 Far side Auton still needs testing
 
 ## Authors

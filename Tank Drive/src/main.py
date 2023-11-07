@@ -213,12 +213,14 @@ def when_started1():
 
 def cat_distance():
     while True:
-        if catapult_sense.object_distance() <= 60:
+        if catapult_sense.object_distance() <= 55:
             catapult.stop()
             catapult.set_velocity(0, PERCENT)
             wait (5, MSEC)
         else:
             catapult.set_velocity(50, PERCENT)
+            if controller_1.buttonL1.pressing():
+                catapult.spin(REVERSE)
         wait (5, MSEC)
         
 def acorn_distance():

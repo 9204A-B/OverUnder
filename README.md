@@ -23,6 +23,11 @@ Auton is consistent in scoring Preloads. Needs more testing on descoring matchlo
 * Renamed X_pressed() to push()
 * Renamed A_pressed() to arm_drop()
 
+### 11/7
+* Added automatic and manual controls for catapult launching
+* Added Auton: Far side with hanging pole touch
+Far side Auton still needs testing
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

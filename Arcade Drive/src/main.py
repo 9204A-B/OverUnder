@@ -233,11 +233,13 @@ def auton():
         drivetrain.drive_for(REVERSE, 10, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
         drivetrain.drive(REVERSE)
-        wait (5, SECONDS)
+        wait (8, SECONDS)
         drivetrain.turn_for(RIGHT, 180, DEGREES)
         pushers.set(True)
         drivetrain.drive_for(FORWARD, 40, INCHES)
         pushers.set(False)
+        drivetrain.drive_for(REVERSE, 5, INCHES)
+
 def select():
     global selector
     if selector == 0:

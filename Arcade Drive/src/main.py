@@ -102,9 +102,13 @@ i = 0
 p = 0
 acorn = False
 selector = 0
+auto = False
 
 def auton():
     global selector
+    drivetrain.set_drive_velocity(100, PERCENT)
+    drivetrain.set_turn_velocity(35, PERCENT)
+    drivetrain.set_stopping(BRAKE)
     if selector == 0: # Near side with hanging pole touch
         drivetrain.set_drive_velocity(100, PERCENT)
         drivetrain.set_turn_velocity(35, PERCENT)
@@ -123,17 +127,16 @@ def auton():
         drivetrain.turn_for(RIGHT, 125, DEGREES)
         drivetrain.drive_for(REVERSE, 6, INCHES)
         arm.set(False)
+        wait(150, MSEC)
         drivetrain.turn_for(RIGHT, 250, DEGREES)
         drivetrain.drive_for(FORWARD, 8, INCHES)
         drivetrain.turn_for(RIGHT, 75, DEGREES)
         drivetrain.drive_for(FORWARD, 11.25, INCHES)
         drivetrain.turn_for(LEFT, 73.5, DEGREES)
         drivetrain.drive_for(FORWARD, 25, INCHES)
+        arm.set(True)
     elif selector == 1: # Far side with hanging pole touch
-        drivetrain.set_drive_velocity(100, PERCENT)
-        drivetrain.set_turn_velocity(35, PERCENT)
-        drivetrain.set_stopping(BRAKE)
-        drivetrain.drive_for(FORWARD, 17.5, INCHES)
+        drivetrain.drive_for(FORWARD, 17, INCHES)
         drivetrain.turn_for(LEFT, 45, DEGREES)
         drivetrain.drive_for(FORWARD, 5, INCHES)
         acorn_release()
@@ -143,32 +146,98 @@ def auton():
         drivetrain.turn_for(LEFT, 180, DEGREES)
         drivetrain.drive_for(REVERSE, 11, INCHES)
         drivetrain.drive_for(FORWARD, 5, INCHES)
+        drivetrain.set_turn_velocity(30, PERCENT)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
-        drivetrain.drive_for(FORWARD, 30, INCHES)
+        drivetrain.drive_for(FORWARD, 32, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
         acorn_grab()
-        drivetrain.drive_for(FORWARD, 35, INCHES)
-        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 34, INCHES)
+        drivetrain.turn_for(RIGHT, 100, DEGREES)
         acorn_release()
-        drivetrain.drive_for(FORWARD, 15, INCHES)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.drive_for(FORWARD, 20, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 50, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 30, INCHES)
+        arm.set(True)
+    elif selector == 2:# Near side without hang
+        drivetrain.set_drive_velocity(100, PERCENT)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.drive_for(FORWARD, 17.5, INCHES)
+        drivetrain.turn_for(RIGHT, 45, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        acorn_release()
+        wait (200, MSEC)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 11, INCHES)
+        drivetrain.drive_for(FORWARD, 11, INCHES)
+        drivetrain.turn_for(RIGHT, 10, DEGREES)
+        arm.set(True)
+        drivetrain.turn_for(RIGHT, 125, DEGREES)
+        drivetrain.drive_for(REVERSE, 6, INCHES)
+        arm.set(False)
+        wait(150, MSEC)
+        drivetrain.turn_for(RIGHT, 250, DEGREES)
+    elif selector == 3: # Far side without hang
+        drivetrain.drive_for(FORWARD, 17, INCHES)
+        drivetrain.turn_for(LEFT, 45, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        acorn_release()
+        wait (200, MSEC)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(LEFT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 11, INCHES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        drivetrain.set_turn_velocity(30, PERCENT)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 32, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        acorn_grab()
+        drivetrain.drive_for(FORWARD, 34, INCHES)
+        drivetrain.turn_for(RIGHT, 100, DEGREES)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        acorn_release()
+        drivetrain.drive_for(FORWARD, 20, INCHES)
         drivetrain.drive_for(REVERSE, 5, INCHES)
         drivetrain.turn_for(RIGHT, 180, DEGREES)
-        drivetrain.drive_for(REVERSE, 5, INCHES)
         acorn_grab()
         drivetrain.drive_for(FORWARD, 25, INCHES)
         drivetrain.drive_for(REVERSE, 5, INCHES)
-        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        drivetrain.turn_for(LEFT, 180, DEGREES)
         acorn_release()
-        drivetrain.drive_for(FORWARD, 5, INCHES)
-
-    # elif selector == 2:
-        # Near side without hang
-    # elif selector == 3:
-        # Far side without hang
-    # else:
-        # Programming skills
-
-     
+        drivetrain.drive_for(FORWARD, 25, INCHES)
+        drivetrain.drive_for(REVERSE, 5, INCHES)
+    else: # Programming skills
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.turn_for(LEFT, 90, DEGREES)
+        drivetrain.drive(FORWARD)
+        wait(.25, SECONDS)
+        drivetrain.stop()
+        counter = 0
+        while counter < 5:
+            catapult.spin(FORWARD)
+            if catapult_sense.object_distance() <= 65:
+                counter += 1
+                catapult.spin(FORWARD)
+                wait (250, MSEC)
+                controller_1.screen.clear_screen()
+                controller_1.screen.set_cursor(1, 1)
+                controller_1.screen.print(counter)
+        catapult.stop()
+        drivetrain.turn_for(LEFT, 45, DEGREES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive(REVERSE)
+        wait (5, SECONDS)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        pushers.set(True)
+        drivetrain.drive_for(FORWARD, 40, INCHES)
+        pushers.set(False)
 def select():
     global selector
     if selector == 0:
@@ -224,13 +293,13 @@ def cat_distance():
             catapult.set_velocity(0, PERCENT)
             if controller_1.buttonL1.pressing():
                 catapult.set_velocity(50, PERCENT)
-                catapult.spin(REVERSE)
+                catapult.spin(FORWARD)
                 wait (250, MSEC)
                 auto = False
         else:
             catapult.set_velocity(50, PERCENT)
             if controller_1.buttonL2.pressing():
-                catapult.spin(REVERSE)
+                catapult.spin(FORWARD)
         wait (5, MSEC)
         
 def acorn_distance():
@@ -246,7 +315,7 @@ def acorn_distance():
 def manual_catapult_launch():
     global auto
     auto = False
-    catapult.spin(REVERSE)
+    catapult.spin(FORWARD)
 
 def auto_catapult_launch():
     global auto
@@ -395,3 +464,4 @@ wait(15, MSEC)
 Thread(when_started1)
 Thread(cat_distance)
 Thread(acorn_distance)
+

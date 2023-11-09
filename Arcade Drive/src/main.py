@@ -1,7 +1,6 @@
 #region VEXcode Generated Robot Configuration
 from vex import *
 import urandom #type: ignore
-from Auton.auton import auton
 
 brain=Brain()
 

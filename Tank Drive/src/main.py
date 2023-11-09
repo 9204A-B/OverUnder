@@ -214,13 +214,17 @@ def auton():
         drivetrain.drive_for(FORWARD, 25, INCHES)
         drivetrain.drive_for(REVERSE, 5, INCHES)
     else: # Programming skills
-        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.set_stopping(BRAKE)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.set_drive_velocity(100, PERCENT)
+        drivetrain.drive_for(FORWARD, 12, INCHES)
         drivetrain.turn_for(LEFT, 90, DEGREES)
+        drivetrain.set_drive_velocity(75, PERCENT)
         drivetrain.drive(FORWARD)
         wait(.25, SECONDS)
         drivetrain.stop()
         counter = 0
-        while counter < 5:
+        while counter < 46:
             catapult.spin(FORWARD)
             if catapult_sense.object_distance() <= 65:
                 counter += 1
@@ -230,14 +234,19 @@ def auton():
                 controller_1.screen.set_cursor(1, 1)
                 controller_1.screen.print(counter)
         catapult.stop()
+        drivetrain.set_turn_velocity(30, PERCENT)
+        drivetrain.set_drive_velocity(50, PERCENT)
         drivetrain.turn_for(LEFT, 45, DEGREES)
-        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 14, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.set_drive_velocity(100, PERCENT)
         drivetrain.drive(REVERSE)
-        wait (8, SECONDS)
-        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        wait (2.25, SECONDS)
         pushers.set(True)
+        drivetrain.turn_for(RIGHT, 135, DEGREES)
         drivetrain.drive_for(FORWARD, 40, INCHES)
+        drivetrain.turn_for(RIGHT, 45, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
         pushers.set(False)
         drivetrain.drive_for(REVERSE, 5, INCHES)
 def select():

@@ -37,6 +37,7 @@ Programming skills needs more testing on barrier jumping
 
 ### 11/9
 * Added Auton: Far side with hanging pole touch
+* Corrected automatic catapult launching
 
 Programming skills barrier jumping works
 

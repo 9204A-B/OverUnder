@@ -101,6 +101,7 @@ x = 0
 y = 0
 i = 0
 p = 0
+c = 0
 acorn = False
 selector = 0
 auto = False
@@ -249,6 +250,7 @@ def auton():
         drivetrain.drive_for(FORWARD, 5, INCHES)
         pushers.set(False)
         drivetrain.drive_for(REVERSE, 5, INCHES)
+        
 def select():
     global selector
     if selector == 0:
@@ -299,14 +301,6 @@ def cat_distance():
             catapult.stop()
             catapult.set_velocity(0, PERCENT)
             wait (5, MSEC)
-        elif catapult_sense.object_distance() <= 65 and auto:
-            catapult.stop()
-            catapult.set_velocity(0, PERCENT)
-            if controller_1.buttonL1.pressing():
-                catapult.set_velocity(50, PERCENT)
-                catapult.spin(FORWARD)
-                wait (250, MSEC)
-                auto = False
         else:
             catapult.set_velocity(50, PERCENT)
             if controller_1.buttonL2.pressing():
@@ -329,9 +323,26 @@ def manual_catapult_launch():
     catapult.spin(FORWARD)
 
 def auto_catapult_launch():
-    global auto
-    auto = True
-    catapult.spin_for(REVERSE, 75)
+        global c, auto
+        if c == 0:
+            auto = True
+            while not catapult_sense.object_distance() <= 60:
+                catapult.spin(FORWARD)
+            wait(5, MSEC)
+            catapult.stop()
+        elif c == 1:
+            auto = False
+            catapult.spin(FORWARD)
+            wait(5, MSEC)
+
+def L1_released():
+    global c
+    if c == 0:
+        c = 1
+        wait(5, MSEC)
+    else:
+        c = 0
+        wait(5, MSEC)
 
 def acorn_release():
     global y, acorn
@@ -458,6 +469,7 @@ def button_pressed():
 controller_1.buttonL2.pressed(manual_catapult_launch)
 controller_1.buttonL2.released(L2_released)
 controller_1.buttonL1.pressed(auto_catapult_launch)
+controller_1.buttonL1.released(L1_released)
 controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)
 controller_1.buttonR2.pressed(acorn_release)

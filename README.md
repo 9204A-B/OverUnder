@@ -32,8 +32,8 @@ Far side Auton still needs testing
 ### 11/8
 * Added Auton: Near side without hanging pole touch
 * Added Auton: Programming skills
-* Best matchload Triball position is slightly offset to the right - see image
-[Near side starting position](https://github.com/coollogan876/OverUnder/assets/119338946/c50e58dd-a937-4684-a02a-7422326a28f2)
+* Best matchload Triball position is slightly offset to the right -
+[see image](https://github.com/coollogan876/OverUnder/assets/119338946/c50e58dd-a937-4684-a02a-7422326a28f2)
 
 Programming skills needs more testing on barrier jumping
 

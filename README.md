@@ -38,8 +38,7 @@ Far side Auton still needs testing
 Programming skills needs more testing on barrier jumping
 
 ### 11/9
-* Added Auton: Far side with hanging pole touch!
-
+* Added Auton: Far side with hanging pole touch
 * Corrected automatic catapult launching
 * Corrected Auton code
 

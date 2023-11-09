@@ -33,12 +33,12 @@ Far side Auton still needs testing
 * Added Auton: Near side without hanging pole touch
 * Added Auton: Programming skills
 
-Programming skills needs more testing
+Programming skills needs more testing on barrier jumping
 
 ### 11/9
 * Added Auton: Far side with hanging pole touch
 
-Programming skills needs to test barrier jumping
+Programming skills barrier jumping works
 
 ## Authors
 

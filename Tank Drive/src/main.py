@@ -250,7 +250,8 @@ def auton():
         drivetrain.drive_for(FORWARD, 5, INCHES)
         pushers.set(False)
         drivetrain.drive_for(REVERSE, 5, INCHES)
-        
+    
+
 def select():
     global selector
     if selector == 0:

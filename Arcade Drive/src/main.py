@@ -1,6 +1,7 @@
 #region VEXcode Generated Robot Configuration
 from vex import *
 import urandom #type: ignore
+from Auton.auton import auton
 
 brain=Brain()
 
@@ -104,7 +105,7 @@ c = 0
 acorn = False
 selector = 0
 auto = False
-
+ 
 def auton():
     global selector
     drivetrain.set_drive_velocity(100, PERCENT)
@@ -249,7 +250,8 @@ def auton():
         drivetrain.drive_for(FORWARD, 5, INCHES)
         pushers.set(False)
         drivetrain.drive_for(REVERSE, 5, INCHES)
-        
+    
+
 def select():
     global selector
     if selector == 0:

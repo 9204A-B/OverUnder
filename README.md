@@ -40,7 +40,7 @@ Programming skills needs more testing on barrier jumping
 * Corrected automatic catapult launching
 * Corrected Auton code
 
-Make sure that functions like ...set_turn_velocity() is set as (x, PERCENT) otherwise it will be in RPM and will behave differnently from expected
+Make sure that functions like ...set_turn_velocity() is set as (x, PERCENT) otherwise it will be in RPM and will behave differently from expected
 Programming skills barrier jumping works
 
 ## Authors

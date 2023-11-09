@@ -32,13 +32,17 @@ Far side Auton still needs testing
 ### 11/8
 * Added Auton: Near side without hanging pole touch
 * Added Auton: Programming skills
+* Best matchload Triball position is slightly offset to the right -
+[see image](https://github.com/coollogan876/OverUnder/assets/119338946/c50e58dd-a937-4684-a02a-7422326a28f2)
 
 Programming skills needs more testing on barrier jumping
 
 ### 11/9
 * Added Auton: Far side with hanging pole touch
 * Corrected automatic catapult launching
+* Corrected Auton code
 
+Make sure that functions like ...set_turn_velocity() is set as (x, PERCENT) otherwise it will be in RPM and will behave differently from expected
 Programming skills barrier jumping works
 
 ## Authors

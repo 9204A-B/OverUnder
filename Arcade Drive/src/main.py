@@ -1,7 +1,6 @@
 #region VEXcode Generated Robot Configuration
 from vex import *
 import urandom #type: ignore
-from Auton.auton import auton
 
 brain=Brain()
 
@@ -153,7 +152,7 @@ def auton():
         drivetrain.drive_for(FORWARD, 32, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
         acorn_grab()
-        drivetrain.drive_for(FORWARD, 34, INCHES)
+        drivetrain.drive_for(FORWARD, 32, INCHES)
         drivetrain.turn_for(RIGHT, 100, DEGREES)
         acorn_release()
         drivetrain.set_turn_velocity(35, PERCENT)
@@ -200,7 +199,7 @@ def auton():
         drivetrain.drive_for(FORWARD, 32, INCHES)
         drivetrain.turn_for(RIGHT, 90, DEGREES)
         acorn_grab()
-        drivetrain.drive_for(FORWARD, 34, INCHES)
+        drivetrain.drive_for(FORWARD, 32, INCHES)
         drivetrain.turn_for(RIGHT, 100, DEGREES)
         drivetrain.set_turn_velocity(35, PERCENT)
         acorn_release()
@@ -251,7 +250,6 @@ def auton():
         pushers.set(False)
         drivetrain.drive_for(REVERSE, 5, INCHES)
     
-
 def select():
     global selector
     if selector == 0:
@@ -327,22 +325,24 @@ def auto_catapult_launch():
         global c, auto
         if c == 0:
             auto = True
-            while not catapult_sense.object_distance() <= 60:
+            while not catapult_sense.object_distance() <= 70:
                 catapult.spin(FORWARD)
             wait(5, MSEC)
             catapult.stop()
         elif c == 1:
             auto = False
             catapult.spin(FORWARD)
-            wait(5, MSEC)
+            wait(250, MSEC)
+            catapult.stop()
 
 def L1_released():
-    global c
+    global c, auto
     if c == 0:
         c = 1
         wait(5, MSEC)
     else:
         c = 0
+        auto = False
         wait(5, MSEC)
 
 def acorn_release():

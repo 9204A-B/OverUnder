@@ -39,11 +39,13 @@ Programming skills needs more testing on barrier jumping
 
 ### 11/9
 * Added Auton: Far side with hanging pole touch
-* Corrected automatic catapult launching
 * Corrected Auton code
 
 Make sure that functions like ...set_turn_velocity() is set as (x, PERCENT) otherwise it will be in RPM and will behave differently from expected
 Programming skills barrier jumping works
+
+### 11/10
+* Corrected automatic catapult launching
 
 ## Authors
 

@@ -47,6 +47,13 @@ Programming skills barrier jumping works
 ### 11/10
 * Corrected automatic catapult launching
 
+### 11/11
+* Near side Auton was changed to just descoring matchload as current design and orignal code resulted in a disqualification because the robot cannot enter the opponents goal
+* Far side Auton was corrected
+
+### 11/12
+* Currently most of Auton code won't work because intake was scrapped and catapult is under redesign
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

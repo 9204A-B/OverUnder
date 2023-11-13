@@ -54,6 +54,8 @@ Programming skills barrier jumping works
 ### 11/12
 * Currently most of Auton code won't work because intake was scrapped and catapult is under redesign
 
+Currently Tank Drive is behind Arcade Drive as the drivers Tem and Ellis prefer Arcade Drive
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

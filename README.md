@@ -56,6 +56,9 @@ Programming skills barrier jumping works
 
 Currently Tank Drive is behind Arcade Drive as the drivers Tem and Ellis prefer Arcade Drive
 
+### 11/27
+* Correctly configured the Drivetrain
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

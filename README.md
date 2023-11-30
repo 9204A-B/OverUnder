@@ -58,6 +58,7 @@ Currently Tank Drive is behind Arcade Drive as the drivers Tem and Ellis prefer 
 
 ### 11/27
 * Correctly configured the Drivetrain
+* Changed Gear Ratio of the Intake Motor from 18:1 to 6:1
 
 ## Authors
 

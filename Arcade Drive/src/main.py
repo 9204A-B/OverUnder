@@ -5,9 +5,9 @@ import urandom #type: ignore
 brain=Brain()
 
 # Robot configuration code
-motor_a = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
-motor_b = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
-catapult = MotorGroup(motor_a, motor_b)
+top_arm_joint = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
+bottom_arm_joint = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
+arm = MotorGroup(top_arm_joint, bottom_arm_joint)
 controller_1 = Controller(PRIMARY)
 left_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
 left_motor_b = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
@@ -17,9 +17,7 @@ right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 4, 12, 10, INCHES, 1)
 intake = Motor(Ports.PORT3, GearSetting.RATIO_6_1, False)
-arm = DigitalOut(brain.three_wire_port.h)
 pushers = DigitalOut(brain.three_wire_port.g)
-catapult_sense = Distance(Ports.PORT5)
 acorn_sense = Distance(Ports.PORT4)
 Auton_select = DigitalIn(brain.three_wire_port.f)
 drivetrain.set_stopping(BRAKE)
@@ -290,64 +288,45 @@ def drive():
     pass
 
 def when_started1():
-    catapult.set_velocity(50, PERCENT)
-    catapult.set_max_torque(100, PERCENT)
+    arm.set_velocity(50, PERCENT)
+    arm.set_max_torque(100, PERCENT)
     intake.set_velocity(100, PERCENT)
     pushers.set(False)
-    arm.set(False)
     select()
-
-def cat_distance():
-    global auto
-    while True:
-        if catapult_sense.object_distance() <= 55 and auto == False:
-            catapult.stop()
-            catapult.set_velocity(0, PERCENT)
-            wait (5, MSEC)
-        else:
-            catapult.set_velocity(50, PERCENT)
-            if controller_1.buttonL2.pressing():
-                catapult.spin(FORWARD)
-        wait (5, MSEC)
         
 def acorn_distance():
     global acorn
     while True:
-        if acorn_sense.object_distance() <= 35 and acorn:
-            intake.stop()
+        if acorn_sense.object_distance() <= 65 and acorn:
+            #intake.stop()
             wait(20, MSEC)
         elif acorn_sense.object_distance() >= 220 and acorn == False:
-            intake.stop()
+            #intake.stop()
             wait (20, MSEC)
 
-def manual_catapult_launch():
-    global auto
-    auto = False
-    catapult.spin(FORWARD)
-
-def auto_catapult_launch():
-        global c, auto
+def arm_fold():
+    global c
+    if controller_1.buttonL2.pressing:
         if c == 0:
-            auto = True
-            while not catapult_sense.object_distance() <= 70:
-                catapult.spin(FORWARD)
-            wait(5, MSEC)
-            catapult.stop()
-        elif c == 1:
-            auto = False
-            catapult.spin(FORWARD)
-            wait(250, MSEC)
-            catapult.stop()
+            arm.spin(REVERSE)
+        else:
+            arm.spin(FORWARD)
+    if controller_1.buttonL1.pressing:
+        if c == 0:
+            bottom_arm_joint.spin(REVERSE)
+        else:
+            bottom_arm_joint.spin(FORWARD)
+    wait(5, MSEC)
+        
+def arm_fold_release
 
-def L1_released():
-    global c, auto
+def Up_pressed():
+    global c
     if c == 0:
         c = 1
-        wait(5, MSEC)
     else:
         c = 0
-        auto = False
-        wait(5, MSEC)
+
 
 def acorn_release():
     global y, acorn
@@ -387,9 +366,6 @@ def R1_released():
     else:
         x = 0
         wait(5, MSEC)
-
-def L2_released():
-    catapult.stop()
 
 def push():
     global i
@@ -471,10 +447,11 @@ def button_pressed():
     select()
 
 # system event handlers
-controller_1.buttonL2.pressed(manual_catapult_launch)
-controller_1.buttonL2.released(L2_released)
-controller_1.buttonL1.pressed(auto_catapult_launch)
-controller_1.buttonL1.released(L1_released)
+controller_1.buttonL2.pressed(arm_fold)
+controller_1.buttonL2.released(arm_fold_released)
+controller_1.buttonL1.pressed(arm_fold)
+controller_1.buttonL1.pressed(arm_fold_released)
+controller_1.buttonUp.pressed(Up_pressed)
 controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)
 controller_1.buttonR2.pressed(acorn_release)

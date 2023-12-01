@@ -390,7 +390,7 @@ def X_released():
         i = 0
         wait(5, MSEC)
 
-def arm_drop():
+def arm_drop(): # FIX?
     global p
     if p == 0:
         arm.set(True)
@@ -472,6 +472,6 @@ competition = Competition(drive, auton)
 wait(15, MSEC)
 
 Thread(when_started1)
-Thread(cat_distance)
+Thread(cat_distance) # FIX?
 Thread(acorn_distance)
 

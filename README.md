@@ -65,6 +65,8 @@ Currently Tank Drive is behind Arcade Drive as the drivers Tem and Ellis prefer 
 * Added prototype control code to display motor direction on main screen.
 Note: not yet tested
 
+* Updated Tank Drive's functionality to that of Arcade Drive (note: there are some remaining inconsistencies to discuss)
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

@@ -88,7 +88,7 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 # ------------------------------------------
 # 
 # 	Project:      OverUnder Arcade
-#	Author:       Logan Dresel and Daniel Milan
+#	Author:       Logan Dresel and DM
 #	Created:
 #	Description:  VEXcode V5 Python Project
 # 

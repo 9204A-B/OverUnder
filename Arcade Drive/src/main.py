@@ -304,24 +304,26 @@ def acorn_distance():
             #intake.stop()
             wait (20, MSEC)
 
-def arm_fold():
+def arm_fold(): # default is reverse
     global c
     if controller_1.buttonL2.pressing:
         if c == 0:
             arm.spin(REVERSE)
         else:
             arm.spin(FORWARD)
+    else:
+        arm.stop()
     if controller_1.buttonL1.pressing:
         if c == 0:
             bottom_arm_joint.spin(REVERSE)
         else:
             bottom_arm_joint.spin(FORWARD)
-    wait(5, MSEC)
-        
-def arm_fold_release
+    else:
+        arm.stop()
+    wait(5, MSEC)    
 
 def Up_pressed():
-    global c
+    global c # default 0 (reverse)
     if c == 0:
         c = 1
     else:
@@ -448,9 +450,9 @@ def button_pressed():
 
 # system event handlers
 controller_1.buttonL2.pressed(arm_fold)
-controller_1.buttonL2.released(arm_fold_released)
+controller_1.buttonL2.released(arm_fold)
 controller_1.buttonL1.pressed(arm_fold)
-controller_1.buttonL1.pressed(arm_fold_released)
+controller_1.buttonL1.released(arm_fold)
 controller_1.buttonUp.pressed(Up_pressed)
 controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)

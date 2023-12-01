@@ -324,10 +324,13 @@ def arm_fold(): # default is reverse
 
 def Up_pressed():
     global c # default 0 (reverse)
+    brain.screen.clear_screen()
     if c == 0:
         c = 1
+        brain.screen.print("Motors FORWARD")
     else:
         c = 0
+        brain.screen.print("Motors REVERSE")
 
 
 def acorn_release():

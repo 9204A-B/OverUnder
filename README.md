@@ -60,7 +60,12 @@ Currently Tank Drive is behind Arcade Drive as the drivers Tem and Ellis prefer 
 * Correctly configured the Drivetrain
 * Changed Gear Ratio of the Intake Motor from 18:1 to 6:1
 
+### 11/30
+* Added prototype control code for arm movement, mapped to L1, L2, and Up (toggle motor direction)
+* Added prototype control code to display motor direction on main screen.
+Note: not yet tested
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)
-- [Daniel Milan](https://github.com/Alcryst)
+- (https://github.com/Alcryst)

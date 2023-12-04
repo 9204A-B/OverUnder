@@ -7,6 +7,7 @@ brain=Brain()
 # Robot configuration code
 top_arm_joint = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
 bottom_arm_joint = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
+fly_wheel = Motor(Ports.PORT16, GearSetting.RATIO_6_1, False)
 arm = MotorGroup(top_arm_joint, bottom_arm_joint)
 controller_1 = Controller(PRIMARY)
 left_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
@@ -102,6 +103,8 @@ c = 0
 acorn = False
 selector = 0
 auto = False
+top = False
+bottom = False
  
 def auton():
     global selector
@@ -288,8 +291,12 @@ def drive():
     pass
 
 def when_started1():
-    arm.set_velocity(50, PERCENT)
-    arm.set_max_torque(100, PERCENT)
+    top_arm_joint.set_max_torque(100, PERCENT)
+    top_arm_joint.set_velocity(25, PERCENT)
+    bottom_arm_joint.set_max_torque(100, PERCENT)
+    bottom_arm_joint.set_velocity(25, PERCENT)
+    top_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.set_stopping(HOLD)
     intake.set_velocity(100, PERCENT)
     pushers.set(False)
     select()
@@ -305,22 +312,47 @@ def acorn_distance():
             wait (20, MSEC)
 
 def arm_fold(): # default is reverse
-    global c
-    if controller_1.buttonL2.pressing:
-        if c == 0:
-            arm.spin(REVERSE)
+    global c, top, bottom
+    while True:
+        if top:
+            if c == 0 and top:
+                top_arm_joint.spin(REVERSE)
+            else:
+                top_arm_joint.spin(FORWARD)
         else:
-            arm.spin(FORWARD)
-    else:
-        arm.stop()
-    if controller_1.buttonL1.pressing:
-        if c == 0:
-            bottom_arm_joint.spin(REVERSE)
+            top_arm_joint.stop()
+            top_arm_joint.set_velocity(0, PERCENT)
+        if bottom:
+            bottom_arm_joint.set_velocity(25, PERCENT)
+            if c == 0 and bottom:
+                bottom_arm_joint.spin(REVERSE)
+            else:
+                bottom_arm_joint.spin(FORWARD)
         else:
-            bottom_arm_joint.spin(FORWARD)
-    else:
-        arm.stop()
-    wait(5, MSEC)    
+            bottom_arm_joint.stop()
+            bottom_arm_joint.set_velocity(0, PERCENT) 
+
+def L1_press():
+    global top
+    top = True
+    top_arm_joint.set_velocity(45, PERCENT)
+
+def L1_release():
+    global top
+    top = False
+    top_arm_joint.stop()
+    top_arm_joint.set_velocity(0, PERCENT)
+
+def L2_press():
+    global bottom
+    bottom = True
+    bottom_arm_joint.set_velocity(45, PERCENT)
+
+def L2_release():
+    global bottom
+    bottom = False
+    bottom_arm_joint.set_velocity(0, PERCENT)
+    bottom_arm_joint.stop()
 
 def Up_pressed():
     global c # default 0 (reverse)
@@ -390,14 +422,14 @@ def X_released():
         i = 0
         wait(5, MSEC)
 
-def arm_drop(): # FIX?
+def A_press():
     global p
     if p == 0:
-        arm.set(True)
-        wait(5, MSEC)
-    elif p == 1:
-        arm.set(False)
-        wait(5, MSEC)
+        fly_wheel.set_velocity(100, PERCENT)
+        fly_wheel.set_max_torque(100, PERCENT)
+        fly_wheel.spin(REVERSE)
+    else:
+        fly_wheel.stop()
 
 def A_released():
     global p
@@ -452,16 +484,16 @@ def button_pressed():
     select()
 
 # system event handlers
-controller_1.buttonL2.pressed(arm_fold)
-controller_1.buttonL2.released(arm_fold)
-controller_1.buttonL1.pressed(arm_fold)
-controller_1.buttonL1.released(arm_fold)
+controller_1.buttonL2.pressed(L2_press)
+controller_1.buttonL2.released(L2_release)
+controller_1.buttonL1.pressed(L1_press)
+controller_1.buttonL1.released(L1_release)
 controller_1.buttonUp.pressed(Up_pressed)
 controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)
 controller_1.buttonR2.pressed(acorn_release)
 controller_1.buttonR2.released(R2_released)
-controller_1.buttonA.pressed(arm_drop)
+controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_released)
 controller_1.buttonX.pressed(push)
 controller_1.buttonX.released(X_released)
@@ -471,7 +503,7 @@ competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.
 wait(15, MSEC)
 
+Thread(arm_fold)
 Thread(when_started1)
-Thread(cat_distance) # FIX?
 Thread(acorn_distance)
 

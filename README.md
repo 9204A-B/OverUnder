@@ -67,6 +67,9 @@ Note: not yet tested
 
 * Updated Tank Drive's functionality to that of Arcade Drive (note: there are some remaining inconsistencies to discuss)
 
+### 12/4
+* Arm joints and flywheel code now works
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

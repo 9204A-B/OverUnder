@@ -357,6 +357,7 @@ def L2_release():
 def Up_pressed():
     global c # default 0 (reverse)
     brain.screen.clear_screen()
+    brain.screen.set_cursor(1, 1)
     if c == 0:
         c = 1
         brain.screen.print("Motors FORWARD")

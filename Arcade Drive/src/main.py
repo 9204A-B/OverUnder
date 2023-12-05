@@ -288,7 +288,13 @@ def select():
     wait (10, MSEC)
 
 def drive():
-    pass
+    timer = Timer()
+    while not timer.time(SECONDS) == 75:
+        pass
+    controller_1.screen.clear_screen()
+    controller_1.screen.set_cursor(1, 1)
+    controller_1.rumble("..--")
+    controller_1.screen.print("30 seconds left")
 
 def when_started1():
     top_arm_joint.set_max_torque(100, PERCENT)

@@ -8,7 +8,6 @@ brain=Brain()
 top_arm_joint = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
 bottom_arm_joint = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
 fly_wheel = Motor(Ports.PORT16, GearSetting.RATIO_6_1, False)
-arm = MotorGroup(top_arm_joint, bottom_arm_joint)
 controller_1 = Controller(PRIMARY)
 left_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
 left_motor_b = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
@@ -369,7 +368,6 @@ def Up_pressed():
     else:
         c = 0
         brain.screen.print("Motors REVERSE")
-
 
 def acorn_release():
     global y, acorn

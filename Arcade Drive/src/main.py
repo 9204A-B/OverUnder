@@ -335,7 +335,7 @@ def arm_fold(): # default is reverse
 def L1_press():
     global top
     top = True
-    top_arm_joint.set_velocity(45, PERCENT)
+    top_arm_joint.set_velocity(100, PERCENT)
 
 def L1_release():
     global top
@@ -346,7 +346,7 @@ def L1_release():
 def L2_press():
     global bottom
     bottom = True
-    bottom_arm_joint.set_velocity(45, PERCENT)
+    bottom_arm_joint.set_velocity(65, PERCENT)
 
 def L2_release():
     global bottom

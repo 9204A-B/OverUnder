@@ -103,7 +103,7 @@ selector = 0
 auto = False
 top = False
 bottom = False
- 
+
 def auton():
     global selector
     drivetrain.set_drive_velocity(100, PERCENT)

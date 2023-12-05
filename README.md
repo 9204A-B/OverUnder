@@ -69,6 +69,7 @@ Note: not yet tested
 
 ### 12/4
 * Arm joints and flywheel code now works
+* Added timer to alert driver when there is 30 seconds left in driver control
 
 ## Authors
 

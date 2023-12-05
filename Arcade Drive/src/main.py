@@ -315,7 +315,7 @@ def arm_fold(): # default is reverse
     global c, top, bottom
     while True:
         if top:
-            if c == 0 and top:
+            if c == 0:
                 top_arm_joint.spin(REVERSE)
             else:
                 top_arm_joint.spin(FORWARD)
@@ -323,8 +323,7 @@ def arm_fold(): # default is reverse
             top_arm_joint.stop()
             top_arm_joint.set_velocity(0, PERCENT)
         if bottom:
-            bottom_arm_joint.set_velocity(25, PERCENT)
-            if c == 0 and bottom:
+            if c == 0:
                 bottom_arm_joint.spin(REVERSE)
             else:
                 bottom_arm_joint.spin(FORWARD)

@@ -309,11 +309,11 @@ def when_started1():
 def acorn_distance():
     global acorn
     while True:
-        if acorn_sense.object_distance() <= 65 and acorn:
-            #intake.stop()
+        if acorn_sense.object_distance() <= 70 and acorn:
+            intake.stop()
             wait(20, MSEC)
-        elif acorn_sense.object_distance() >= 220 and acorn == False:
-            #intake.stop()
+        elif acorn_sense.object_distance() >= 240 and acorn == False:
+            intake.stop()
             wait (20, MSEC)
 
 def arm_fold(): # default is reverse

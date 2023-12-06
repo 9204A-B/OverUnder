@@ -29,7 +29,7 @@ drivetrain_r_needs_to_be_stopped_controller_1 = False
 
 # define a task that will handle monitoring inputs from controller_1
 def rc_auto_loop_function_controller_1():
-    global drivetrain_l_needs_to_be_stopped_controller_1, drivetrain_r_needs_to_be_stopped_controller_1, remote_control_code_enabled
+    global drivetrain_l_needs_to_be_stopped_controller_1, drivetrain_r_needs_to_be_stopped_controller_1, remote_control_code_enabled, tank
     # process the controller input every 20 milliseconds
     # update the motors based on the input values
     while True:
@@ -77,10 +77,9 @@ def rc_auto_loop_function_controller_1():
         # wait before repeating the process
         wait(20, MSEC)
 
+rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 # define variable for remote controller enable/disable
 remote_control_code_enabled = True
-
-rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 #endregion VEXcode Generated Robot Configuration
 
@@ -103,6 +102,7 @@ selector = 0
 auto = False
 top = False
 bottom = False
+tank = False
 
 def auton():
     global selector
@@ -485,6 +485,20 @@ def button_pressed():
         selector = 0
         wait (5, MSEC)
     select()
+
+def tank_select():
+    global tank
+    tank = True
+    controller_1.screen.clear_screen()
+    controller_1.screen.set_cursor(1, 1)
+    controller_1.screen.print("Tank Drive")
+
+def arcade_select():
+    global tank
+    tank = False
+    controller_1.screen.clear_screen()
+    controller_1.screen.set_cursor(1, 1)
+    controller_1.screen.print("Arcade Drive")
 
 # system event handlers
 controller_1.buttonL2.pressed(L2_press)

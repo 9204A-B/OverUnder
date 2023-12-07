@@ -360,14 +360,14 @@ def L2_release():
 
 def Up_pressed():
     global c # default 0 (reverse)
-    brain.screen.clear_screen()
-    brain.screen.set_cursor(1, 1)
+    controller_1.screen.clear_screen()
+    controller_1.screen.set_cursor(1, 1)
     if c == 0:
         c = 1
-        brain.screen.print("Motors FORWARD")
+        controller_1.screen.print("Arm will go down")
     else:
         c = 0
-        brain.screen.print("Motors REVERSE")
+        controller_1.screen.print("Arm will go up")
 
 def acorn_release():
     global y, acorn

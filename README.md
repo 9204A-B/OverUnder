@@ -77,6 +77,8 @@ Note: Do not use port 10, issue with brain
 * Created template B Team directory with copied A Team Arcade Drive main.py.
 Note: not adjusted to design of B Team bot! No .vscode settings copied, so recommendation is to use main.py as a *reference* only.
 
+### 12/13
+* Edited Walls to be individually controlled using X and Y
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

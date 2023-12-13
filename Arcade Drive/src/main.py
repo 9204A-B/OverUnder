@@ -17,7 +17,8 @@ right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 4, 12, 10, INCHES, 1)
 intake = Motor(Ports.PORT3, GearSetting.RATIO_6_1, False)
-pushers = DigitalOut(brain.three_wire_port.g)
+left_pusher = DigitalOut(brain.three_wire_port.g)
+right_pusher = DigitalOut(brain.three_wire_port.h)
 acorn_sense = Distance(Ports.PORT4)
 Auton_select = DigitalIn(brain.three_wire_port.f)
 drivetrain.set_stopping(BRAKE)
@@ -96,7 +97,8 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 x = 0
 y = 0
-i = 0
+left = 0
+right = 0
 p = 0
 c = 0
 acorn = False
@@ -303,7 +305,8 @@ def when_started1():
     top_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.set_stopping(HOLD)
     intake.set_velocity(100, PERCENT)
-    pushers.set(False)
+    left_pusher.set(False)
+    right_pusher.set(False)
     select()
         
 def acorn_distance():
@@ -409,21 +412,38 @@ def R1_released():
         wait(5, MSEC)
 
 def push():
-    global i
-    if i == 0:
-        pushers.set(True)
-        wait(5, MSEC)
-    elif i == 1:
-        pushers.set(False)
-        wait(5, MSEC)
+    global left, right
+    if controller_1.buttonA.pressing:
+        if left == 0:
+            left_pusher.set(True)
+            wait(5, MSEC)
+        elif left == 1:
+            left_pusher.set(False)
+            wait(5, MSEC)
+    if controller_1.buttonB.pressing:
+        if right == 0:
+            right_pusher.set(True)
+            wait(5, MSEC)
+        elif right == 1:
+            right_pusher.set(False)
+            wait(5, MSEC)
 
-def X_released():
-    global i
-    if i == 0:
-        i = 1
+def X_release():
+    global left
+    if left == 0:
+        left = 1
         wait(5, MSEC)
     else:
-        i = 0
+        left = 0
+        wait(5, MSEC)
+
+def Y_release():
+    global right
+    if right == 0:
+        right = 1
+        wait(5, MSEC)
+    else:
+        right = 0
         wait(5, MSEC)
 
 def A_press():
@@ -500,7 +520,9 @@ controller_1.buttonR2.released(R2_released)
 controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_released)
 controller_1.buttonX.pressed(push)
-controller_1.buttonX.released(X_released)
+controller_1.buttonX.released(X_release)
+controller_1.buttonY.pressed(push)
+controller_1.buttonY.released(Y_release)
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)

@@ -412,22 +412,10 @@ def R1_released():
         wait(5, MSEC)
 
 def push():
-    global left, right
-    if controller_1.buttonA.pressing:
-        if left == 0:
-            left_pusher.set(True)
-            wait(5, MSEC)
-        elif left == 1:
-            left_pusher.set(False)
-            wait(5, MSEC)
-    if controller_1.buttonB.pressing:
-        if right == 0:
-            right_pusher.set(True)
-            wait(5, MSEC)
-        elif right == 1:
-            right_pusher.set(False)
-            wait(5, MSEC)
-
+    left_pusher.set(True)
+    right_pusher.set(True)
+    wait(5, MSEC)
+    
 def X_release():
     global left
     if left == 0:
@@ -435,15 +423,6 @@ def X_release():
         wait(5, MSEC)
     else:
         left = 0
-        wait(5, MSEC)
-
-def Y_release():
-    global right
-    if right == 0:
-        right = 1
-        wait(5, MSEC)
-    else:
-        right = 0
         wait(5, MSEC)
 
 def A_press():
@@ -521,8 +500,6 @@ controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_released)
 controller_1.buttonX.pressed(push)
 controller_1.buttonX.released(X_release)
-controller_1.buttonY.pressed(push)
-controller_1.buttonY.released(Y_release)
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)

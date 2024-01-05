@@ -97,8 +97,7 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 x = 0
 y = 0
-left = 0
-right = 0
+pusher = 0
 p = 0
 c = 0
 acorn = False
@@ -412,17 +411,23 @@ def R1_released():
         wait(5, MSEC)
 
 def push():
-    left_pusher.set(True)
-    right_pusher.set(True)
-    wait(5, MSEC)
+    global pusher
+    if pusher == 0:
+        left_pusher.set(True)
+        right_pusher.set(True)
+        wait(5, MSEC)
+    elif pusher == 1:
+        left_pusher.set(False)
+        right_pusher.set(False)
+        wait(5, MSEC)
     
 def X_release():
-    global left
-    if left == 0:
-        left = 1
+    global pusher
+    if pusher == 0:
+        pusher = 1
         wait(5, MSEC)
     else:
-        left = 0
+        pusher = 0
         wait(5, MSEC)
 
 def A_press():

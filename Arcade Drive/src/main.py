@@ -105,40 +105,42 @@ selector = 0
 auto = False
 top = False
 bottom = False
- 
+
+# to update auton
+# change arm commands to left_pusher commands
+# change pusher commands to commands for both left and right pushers
+
 def auton():
     global selector
     drivetrain.set_drive_velocity(100, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
-    # if selector == 0: # Near side with hanging pole touch
-    #     drivetrain.set_drive_velocity(100, PERCENT)
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     arm.set(True)
-    #     drivetrain.drive_for(FORWARD, 17.5, INCHES)
-    #     wait (250, MSEC)
-    #     arm.set(False)
-        # drivetrain.turn_for(RIGHT, 90, DEGREES)
-        # drivetrain.drive_for(FORWARD, 5, INCHES)
-        # acorn_release()
-        # wait (200, MSEC)
-        # drivetrain.drive_for(FORWARD, 4, INCHES)
-        # drivetrain.drive_for(REVERSE, 6, INCHES)
-        # drivetrain.turn_for(RIGHT, 180, DEGREES)
-        # drivetrain.drive_for(FORWARD, 4, INCHES)
-        # drivetrain.turn_for(RIGHT, 10, DEGREES)
-        # arm.set(True)
-        # drivetrain.turn_for(RIGHT, 115, DEGREES)
-        # drivetrain.drive_for(REVERSE, 6, INCHES)
-        # arm.set(False)
-        # wait(150, MSEC)
-        # drivetrain.turn_for(RIGHT, 250, DEGREES)
-        # drivetrain.drive_for(FORWARD, 8, INCHES)
-        # drivetrain.turn_for(RIGHT, 75, DEGREES)
-        # drivetrain.drive_for(FORWARD, 11.25, INCHES)
-        # drivetrain.turn_for(LEFT, 73.5, DEGREES)
-        # drivetrain.drive_for(FORWARD, 25, INCHES)
-        # arm.set(True)
+    if selector == 0: # Near side with hanging pole touch
+        left_pusher.set(True)
+        drivetrain.drive_for(FORWARD, 17.5, INCHES)
+        wait (250, MSEC)
+        left_pusher.set(False)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        acorn_release() # update?
+        wait (200, MSEC)
+        drivetrain.drive_for(FORWARD, 4, INCHES)
+        drivetrain.drive_for(REVERSE, 6, INCHES)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        drivetrain.drive_for(FORWARD, 4, INCHES)
+        drivetrain.turn_for(RIGHT, 10, DEGREES)
+        left_pusher.set(True)
+        drivetrain.turn_for(RIGHT, 115, DEGREES)
+        drivetrain.drive_for(REVERSE, 6, INCHES)
+        left_pusher.set(False)
+        wait(150, MSEC)
+        drivetrain.turn_for(RIGHT, 250, DEGREES)
+        drivetrain.drive_for(FORWARD, 8, INCHES)
+        drivetrain.turn_for(RIGHT, 75, DEGREES)
+        drivetrain.drive_for(FORWARD, 11.25, INCHES)
+        drivetrain.turn_for(LEFT, 73.5, DEGREES)
+        drivetrain.drive_for(FORWARD, 25, INCHES)
+        left_pusher.set(True)
     # elif selector == 1: # Far side with hanging pole touch
     #     drivetrain.drive_for(FORWARD, 17, INCHES)
     #     drivetrain.turn_for(LEFT, 45, DEGREES)

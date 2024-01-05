@@ -290,6 +290,8 @@ def select():
     wait (10, MSEC)
 
 def drive():
+    left_pusher.set(False)
+    right_pusher.set(False)
     timer = Timer()
     while not timer.time(SECONDS) == 75:
         pass
@@ -412,25 +414,38 @@ def R1_released():
         x = 0
         wait(5, MSEC)
 
-def push():
-    global pusher
+def X_push(): # combine functionality of push() and X_release()
+    global pusher # starts at 0
     if pusher == 0:
+        pusher = pusher + 1
         left_pusher.set(True)
         right_pusher.set(True)
         wait(5, MSEC)
     elif pusher == 1:
+        pusher = pusher - 1
         left_pusher.set(False)
         right_pusher.set(False)
         wait(5, MSEC)
+
+#def push():
+#    global pusher
+#    if pusher == 0:
+#        left_pusher.set(True)
+#        right_pusher.set(True)
+#        wait(5, MSEC)
+#    elif pusher == 1:
+#        left_pusher.set(False)
+#        right_pusher.set(False)
+#        wait(5, MSEC)
     
-def X_release():
-    global pusher
-    if pusher == 0:
-        pusher = 1
-        wait(5, MSEC)
-    else:
-        pusher = 0
-        wait(5, MSEC)
+#def X_release():
+#    global pusher
+#    if pusher == 0:
+#        pusher = 1
+#        wait(5, MSEC)
+#    else:
+#        pusher = 0
+#        wait(5, MSEC)
 
 def A_press():
     global p
@@ -505,8 +520,9 @@ controller_1.buttonR2.pressed(acorn_release)
 controller_1.buttonR2.released(R2_released)
 controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_released)
-controller_1.buttonX.pressed(push)
-controller_1.buttonX.released(X_release)
+controller_1.buttonX.pressed(X_push)
+# controller_1.buttonX.pressed(push)
+# controller_1.buttonX.released(X_release)
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)

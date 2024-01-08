@@ -126,8 +126,10 @@ def auton():
     if selector == 0: # Near side with hanging pole touch
         wait(100, MSEC)
         acorn_grab()
+        drivetrain.drive(FORWARD)
         left_pusher.set(True)
-        drivetrain.drive_for(FORWARD, 1, INCHES)
+        wait(.5, SECONDS)
+        drivetrain.stop()
         left_pusher.set(False)
         drivetrain.turn_for(RIGHT, 45, DEGREES)
         acorn_release()

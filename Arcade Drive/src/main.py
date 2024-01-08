@@ -111,36 +111,34 @@ bottom = False
 # change pusher commands to commands for both left and right pushers
 
 def auton():
-    global selector
-    drivetrain.set_drive_velocity(100, PERCENT)
+    global selector, auto
+    auto = True
+    drivetrain.set_drive_velocity(50, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
+    top_arm_joint.set_max_torque(100, PERCENT)
+    top_arm_joint.set_velocity(25, PERCENT)
+    bottom_arm_joint.set_max_torque(100, PERCENT)
+    bottom_arm_joint.set_velocity(25, PERCENT)
+    top_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.spin_for(REVERSE, .5, SECONDS) #Lift intake to drop arm
     if selector == 0: # Near side with hanging pole touch
+        wait(100, MSEC)
+        acorn_grab()
         left_pusher.set(True)
-        drivetrain.drive_for(FORWARD, 17.5, INCHES)
-        wait (250, MSEC)
+        drivetrain.drive_for(FORWARD, 1, INCHES)
         left_pusher.set(False)
-        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.turn_for(RIGHT, 45, DEGREES)
+        acorn_release()
         drivetrain.drive_for(FORWARD, 5, INCHES)
-        acorn_release() # update?
-        wait (200, MSEC)
-        drivetrain.drive_for(FORWARD, 4, INCHES)
-        drivetrain.drive_for(REVERSE, 6, INCHES)
-        drivetrain.turn_for(RIGHT, 180, DEGREES)
-        drivetrain.drive_for(FORWARD, 4, INCHES)
-        drivetrain.turn_for(RIGHT, 10, DEGREES)
-        left_pusher.set(True)
-        drivetrain.turn_for(RIGHT, 115, DEGREES)
-        drivetrain.drive_for(REVERSE, 6, INCHES)
-        left_pusher.set(False)
-        wait(150, MSEC)
-        drivetrain.turn_for(RIGHT, 250, DEGREES)
-        drivetrain.drive_for(FORWARD, 8, INCHES)
-        drivetrain.turn_for(RIGHT, 75, DEGREES)
-        drivetrain.drive_for(FORWARD, 11.25, INCHES)
-        drivetrain.turn_for(LEFT, 73.5, DEGREES)
-        drivetrain.drive_for(FORWARD, 25, INCHES)
-        left_pusher.set(True)
+        drivetrain.drive_for(REVERSE, 8, INCHES)
+        drivetrain.turn_for(LEFT, 45, DEGREES)
+        drivetrain.drive_for(REVERSE, 4, INCHES)
+        wait(200, MSEC)
+        drivetrain.drive_for(REVERSE, 20, INCHES)
+        bottom_arm_joint.spin_for(REVERSE, 20, DEGREES)
+        top_arm_joint.spin_for(REVERSE, 10, DEGREES)
     elif selector == 1: # Far side with hanging pole touch
         drivetrain.drive_for(FORWARD, 17, INCHES)
         drivetrain.turn_for(LEFT, 45, DEGREES)
@@ -220,7 +218,7 @@ def auton():
         acorn_release()
         drivetrain.drive_for(FORWARD, 25, INCHES)
         drivetrain.drive_for(REVERSE, 5, INCHES)
-    else: # Programming skills
+    #else: # Programming skills
     #     drivetrain.set_stopping(BRAKE)
     #     drivetrain.set_turn_velocity(35, PERCENT)
     #     drivetrain.set_drive_velocity(100, PERCENT)
@@ -290,6 +288,8 @@ def select():
     wait (10, MSEC)
 
 def drive():
+    global auto
+    auto = False
     left_pusher.set(False)
     right_pusher.set(False)
     timer = Timer()
@@ -322,9 +322,9 @@ def acorn_distance():
             intake.stop()
             wait (20, MSEC)
 
-def arm_fold(): # default is reverse
-    global c, top, bottom
-    while True:
+def arm_fold(): # default is reverse 
+    global c, top, bottom, auto
+    while True and not auto: # This caused me pain trying to find out why auto broken
         if top:
             if c == 0:
                 top_arm_joint.spin(REVERSE)

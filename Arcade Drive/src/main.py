@@ -113,7 +113,7 @@ bottom = False
 def auton():
     global selector, auto
     auto = True
-    drivetrain.set_drive_velocity(50, PERCENT)
+    drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
     top_arm_joint.set_max_torque(100, PERCENT)
@@ -133,12 +133,16 @@ def auton():
         left_pusher.set(False)
         drivetrain.turn_for(RIGHT, 45, DEGREES)
         acorn_release()
-        drivetrain.drive_for(FORWARD, 5, INCHES)
-        drivetrain.drive_for(REVERSE, 8, INCHES)
+        drivetrain.drive(FORWARD)
+        wait(1, SECONDS)
+        drivetrain.stop()
+        drivetrain.drive(REVERSE)
+        wait(1, SECONDS)
+        drivetrain.stop()
         drivetrain.turn_for(LEFT, 45, DEGREES)
-        drivetrain.drive_for(REVERSE, 4, INCHES)
-        wait(200, MSEC)
-        drivetrain.drive_for(REVERSE, 20, INCHES)
+        drivetrain.drive(REVERSE)
+        wait(5, SECONDS)
+        drivetrain.stop()
         bottom_arm_joint.spin_for(REVERSE, 20, DEGREES)
         top_arm_joint.spin_for(REVERSE, 10, DEGREES)
     elif selector == 1: # Far side with hanging pole touch

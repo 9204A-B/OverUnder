@@ -133,7 +133,7 @@ def auton():
         drivetrain.drive_for(FORWARD, 9, INCHES)
         acorn_release()
         wait(200, MSEC)
-        drivetrain.drive_for(FORWARD, 3, INCHES)
+        drivetrain.drive_for(FORWARD, 2.5, INCHES)
         acorn_release()
         wait(200, MSEC)
         drivetrain.drive_for(FORWARD, 1, INCHES)

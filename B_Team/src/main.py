@@ -17,8 +17,7 @@ right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 4, 12, 10, INCHES, 1)
 intake = Motor(Ports.PORT3, GearSetting.RATIO_6_1, False)
-left_pusher = DigitalOut(brain.three_wire_port.g)
-right_pusher = DigitalOut(brain.three_wire_port.h)
+pushers = DigitalOut(brain.three_wire_port.g)
 acorn_sense = Distance(Ports.PORT4)
 Auton_select = DigitalIn(brain.three_wire_port.f)
 drivetrain.set_stopping(BRAKE)
@@ -97,7 +96,7 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 x = 0
 y = 0
-pusher = 0
+i = 0
 p = 0
 c = 0
 acorn = False
@@ -105,42 +104,40 @@ selector = 0
 auto = False
 top = False
 bottom = False
-
-# to update auton
-# change arm commands to left_pusher commands
-# change pusher commands to commands for both left and right pushers
-
+ 
 def auton():
     global selector
     drivetrain.set_drive_velocity(100, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
-    if selector == 0: # Near side with hanging pole touch
-        left_pusher.set(True)
-        drivetrain.drive_for(FORWARD, 17.5, INCHES)
-        wait (250, MSEC)
-        left_pusher.set(False)
-        drivetrain.turn_for(RIGHT, 90, DEGREES)
-        drivetrain.drive_for(FORWARD, 5, INCHES)
-        acorn_release() # update?
-        wait (200, MSEC)
-        drivetrain.drive_for(FORWARD, 4, INCHES)
-        drivetrain.drive_for(REVERSE, 6, INCHES)
-        drivetrain.turn_for(RIGHT, 180, DEGREES)
-        drivetrain.drive_for(FORWARD, 4, INCHES)
-        drivetrain.turn_for(RIGHT, 10, DEGREES)
-        left_pusher.set(True)
-        drivetrain.turn_for(RIGHT, 115, DEGREES)
-        drivetrain.drive_for(REVERSE, 6, INCHES)
-        left_pusher.set(False)
-        wait(150, MSEC)
-        drivetrain.turn_for(RIGHT, 250, DEGREES)
-        drivetrain.drive_for(FORWARD, 8, INCHES)
-        drivetrain.turn_for(RIGHT, 75, DEGREES)
-        drivetrain.drive_for(FORWARD, 11.25, INCHES)
-        drivetrain.turn_for(LEFT, 73.5, DEGREES)
-        drivetrain.drive_for(FORWARD, 25, INCHES)
-        left_pusher.set(True)
+    # if selector == 0: # Near side with hanging pole touch
+    #     drivetrain.set_drive_velocity(100, PERCENT)
+    #     drivetrain.set_turn_velocity(35, PERCENT)
+    #     arm.set(True)
+    #     drivetrain.drive_for(FORWARD, 17.5, INCHES)
+    #     wait (250, MSEC)
+    #     arm.set(False)
+        # drivetrain.turn_for(RIGHT, 90, DEGREES)
+        # drivetrain.drive_for(FORWARD, 5, INCHES)
+        # acorn_release()
+        # wait (200, MSEC)
+        # drivetrain.drive_for(FORWARD, 4, INCHES)
+        # drivetrain.drive_for(REVERSE, 6, INCHES)
+        # drivetrain.turn_for(RIGHT, 180, DEGREES)
+        # drivetrain.drive_for(FORWARD, 4, INCHES)
+        # drivetrain.turn_for(RIGHT, 10, DEGREES)
+        # arm.set(True)
+        # drivetrain.turn_for(RIGHT, 115, DEGREES)
+        # drivetrain.drive_for(REVERSE, 6, INCHES)
+        # arm.set(False)
+        # wait(150, MSEC)
+        # drivetrain.turn_for(RIGHT, 250, DEGREES)
+        # drivetrain.drive_for(FORWARD, 8, INCHES)
+        # drivetrain.turn_for(RIGHT, 75, DEGREES)
+        # drivetrain.drive_for(FORWARD, 11.25, INCHES)
+        # drivetrain.turn_for(LEFT, 73.5, DEGREES)
+        # drivetrain.drive_for(FORWARD, 25, INCHES)
+        # arm.set(True)
     # elif selector == 1: # Far side with hanging pole touch
     #     drivetrain.drive_for(FORWARD, 17, INCHES)
     #     drivetrain.turn_for(LEFT, 45, DEGREES)
@@ -306,8 +303,7 @@ def when_started1():
     top_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.set_stopping(HOLD)
     intake.set_velocity(100, PERCENT)
-    left_pusher.set(False)
-    right_pusher.set(False)
+    pushers.set(False)
     select()
         
 def acorn_distance():
@@ -364,14 +360,14 @@ def L2_release():
 
 def Up_pressed():
     global c # default 0 (reverse)
-    controller_1.screen.clear_screen()
-    controller_1.screen.set_cursor(1, 1)
+    brain.screen.clear_screen()
+    brain.screen.set_cursor(1, 1)
     if c == 0:
         c = 1
-        controller_1.screen.print("Arm will go down")
+        brain.screen.print("Motors FORWARD")
     else:
         c = 0
-        controller_1.screen.print("Arm will go up")
+        brain.screen.print("Motors REVERSE")
 
 def acorn_release():
     global y, acorn
@@ -413,23 +409,21 @@ def R1_released():
         wait(5, MSEC)
 
 def push():
-    global pusher
-    if pusher == 0:
-        left_pusher.set(True)
-        right_pusher.set(True)
+    global i
+    if i == 0:
+        pushers.set(True)
         wait(5, MSEC)
-    elif pusher == 1:
-        left_pusher.set(False)
-        right_pusher.set(False)
+    elif i == 1:
+        pushers.set(False)
         wait(5, MSEC)
-    
-def X_release():
-    global pusher
-    if pusher == 0:
-        pusher = 1
+
+def X_released():
+    global i
+    if i == 0:
+        i = 1
         wait(5, MSEC)
     else:
-        pusher = 0
+        i = 0
         wait(5, MSEC)
 
 def A_press():
@@ -506,7 +500,7 @@ controller_1.buttonR2.released(R2_released)
 controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_released)
 controller_1.buttonX.pressed(push)
-controller_1.buttonX.released(X_release)
+controller_1.buttonX.released(X_released)
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)
@@ -516,4 +510,3 @@ wait(15, MSEC)
 Thread(arm_fold)
 Thread(when_started1)
 Thread(acorn_distance)
-

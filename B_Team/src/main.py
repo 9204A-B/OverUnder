@@ -383,7 +383,11 @@ R_"/button/" = When the button is released
 def P_X_Arm_Punch():
     global IsPunching? = 1
     while(IsPunching != 0):
-        left_motor_a.velocity(100)
+        left_motor_a.set_velocity(100, PERCENT)
+        
+        """IMPORTANT, BEFORE RUNNING CODE SET THE SLEEP FUNCTION TO THE PUNCH DURATION, YOU WILL BURN OUT MOTOR IF YOU DON"T sleep(5)"""
+        
+        left_motor_a.set_velocity(-100, PERCENT)
         
         
 

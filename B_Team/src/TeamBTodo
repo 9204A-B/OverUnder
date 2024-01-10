@@ -1,0 +1,11 @@
+PRESSING (do ASAP)
+- Adjust ports correctly
+- Set motor velocity, etc.
+
+PREVALENT (not urgent, but should be done soon)
+- Update auton; create a working applicable auton and remove the old Team A autons
+
+PONDER (consider adding/changing, but nonessential)
+- Remove/adjust brain auton selection feature
+- Programming skills (if possible)
+- Remove old and unused variables, functions, etc. to clean up code

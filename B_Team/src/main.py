@@ -7,8 +7,11 @@ brain=Brain()
 # Robot configuration code
 # top_arm_joint = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True) > legacy
 
-controller_1 = Controller(PRIMARY)
+
+#Arm Punch Motor
 left_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
+
+controller_1 = Controller(PRIMARY)
 left_motor_b = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
 right_motor_a = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
@@ -358,5 +361,32 @@ competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.
 wait(15, MSEC)
 
-
 Thread(when_started1) # legacy; no use
+
+
+
+
+"""
+Driver Code Start
+
+
+Naming Conventions
+
+P_"/button/" = When the button is pressed
+
+R_"/button/" = When the button is released
+
+"""
+
+#Arm Punching function
+
+def P_X_Arm_Punch():
+    global IsPunching? = 1
+    while(IsPunching != 0):
+        left_motor_a.velocity(100)
+        
+        
+
+def R_X_Arm_Punch():
+    IsPunching? = 0
+    

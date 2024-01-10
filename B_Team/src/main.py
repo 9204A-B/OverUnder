@@ -5,9 +5,8 @@ import urandom #type: ignore
 brain=Brain()
 
 # Robot configuration code
-top_arm_joint = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
-bottom_arm_joint = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
-fly_wheel = Motor(Ports.PORT16, GearSetting.RATIO_6_1, False)
+# top_arm_joint = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True) > legacy
+
 controller_1 = Controller(PRIMARY)
 left_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
 left_motor_b = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
@@ -16,9 +15,6 @@ right_motor_a = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
 right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 4, 12, 10, INCHES, 1)
-intake = Motor(Ports.PORT3, GearSetting.RATIO_6_1, False)
-pushers = DigitalOut(brain.three_wire_port.g)
-acorn_sense = Distance(Ports.PORT4)
 Auton_select = DigitalIn(brain.three_wire_port.f)
 drivetrain.set_stopping(BRAKE)
 
@@ -87,8 +83,8 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 # ------------------------------------------
 # 
-# 	Project:      OverUnder Arcade
-#	Author:       Logan Dresel and DM
+# 	Project:      OverUnder Arcade B Team
+#	Author:       B Team Authors
 #	Created:
 #	Description:  VEXcode V5 Python Project
 # 
@@ -296,156 +292,20 @@ def drive():
     controller_1.screen.print("30 seconds left")
 
 def when_started1():
-    top_arm_joint.set_max_torque(100, PERCENT)
-    top_arm_joint.set_velocity(25, PERCENT)
-    bottom_arm_joint.set_max_torque(100, PERCENT)
-    bottom_arm_joint.set_velocity(25, PERCENT)
-    top_arm_joint.set_stopping(HOLD)
-    bottom_arm_joint.set_stopping(HOLD)
-    intake.set_velocity(100, PERCENT)
-    pushers.set(False)
+    # top_arm_joint.set_max_torque(100, PERCENT)
+    # top_arm_joint.set_velocity(25, PERCENT)
+    # bottom_arm_joint.set_max_torque(100, PERCENT)
+    # bottom_arm_joint.set_velocity(25, PERCENT)
+    # top_arm_joint.set_stopping(HOLD)
+    # bottom_arm_joint.set_stopping(HOLD)
+    # intake.set_velocity(100, PERCENT)
+    # pushers.set(False)
     select()
-        
-def acorn_distance():
-    global acorn
-    while True:
-        if acorn_sense.object_distance() <= 70 and acorn:
-            intake.stop()
-            wait(20, MSEC)
-        elif acorn_sense.object_distance() >= 240 and acorn == False:
-            intake.stop()
-            wait (20, MSEC)
-
-def arm_fold(): # default is reverse
-    global c, top, bottom
-    while True:
-        if top:
-            if c == 0:
-                top_arm_joint.spin(REVERSE)
-            else:
-                top_arm_joint.spin(FORWARD)
-        else:
-            top_arm_joint.stop()
-            top_arm_joint.set_velocity(0, PERCENT)
-        if bottom:
-            if c == 0:
-                bottom_arm_joint.spin(REVERSE)
-            else:
-                bottom_arm_joint.spin(FORWARD)
-        else:
-            bottom_arm_joint.stop()
-            bottom_arm_joint.set_velocity(0, PERCENT) 
-
-def L1_press():
-    global top
-    top = True
-    top_arm_joint.set_velocity(100, PERCENT)
-
-def L1_release():
-    global top
-    top = False
-    top_arm_joint.stop()
-    top_arm_joint.set_velocity(0, PERCENT)
-
-def L2_press():
-    global bottom
-    bottom = True
-    bottom_arm_joint.set_velocity(65, PERCENT)
-
-def L2_release():
-    global bottom
-    bottom = False
-    bottom_arm_joint.set_velocity(0, PERCENT)
-    bottom_arm_joint.stop()
-
-def Up_pressed():
-    global c # default 0 (reverse)
-    brain.screen.clear_screen()
-    brain.screen.set_cursor(1, 1)
-    if c == 0:
-        c = 1
-        brain.screen.print("Motors FORWARD")
-    else:
-        c = 0
-        brain.screen.print("Motors REVERSE")
-
-def acorn_release():
-    global y, acorn
-    if y == 0:
-        acorn = False
-        intake.spin(REVERSE)
-        wait(5, MSEC)
-    elif y == 1:
-        intake.stop()
-        wait(5, MSEC)
-
-def R2_released():
-    global y, acorn
-    if y == 0:
-        y = 1
-        wait(5, MSEC)
-    else:
-        y = 0
-        wait(5, MSEC)
-
-def acorn_grab():
-    global x, acorn
-    if x == 0:
-        acorn = True
-        intake.set_velocity(100, PERCENT)
-        intake.spin(FORWARD)
-        wait(5, MSEC)
-    elif x == 1:
-        intake.stop()
-        wait(5, MSEC)
-
-def R1_released():
-    global x
-    if x == 0:
-        x = 1
-        wait(5, MSEC)
-    else:
-        x = 0
-        wait(5, MSEC)
-
-def push():
-    global i
-    if i == 0:
-        pushers.set(True)
-        wait(5, MSEC)
-    elif i == 1:
-        pushers.set(False)
-        wait(5, MSEC)
-
-def X_released():
-    global i
-    if i == 0:
-        i = 1
-        wait(5, MSEC)
-    else:
-        i = 0
-        wait(5, MSEC)
-
-def A_press():
-    global p
-    if p == 0:
-        fly_wheel.set_velocity(100, PERCENT)
-        fly_wheel.set_max_torque(100, PERCENT)
-        fly_wheel.spin(REVERSE)
-    else:
-        fly_wheel.stop()
-
-def A_released():
-    global p
-    if p == 0:
-        p = 1
-        wait(5, MSEC)
-    else:
-        p = 0
-        wait(5, MSEC)
 
 def brain_touch():
-    brain.screen.print("Port 1: left catapult motor")
+    # brain.screen.print("Port 1: left catapult motor")
+    # brain.screen.new_line()
+    brain.screen.print("LEGACY; NOT APPLICABLE")
     brain.screen.new_line()
     brain.screen.print("Port 2: right catapult motor")
     brain.screen.new_line()
@@ -488,17 +348,8 @@ def button_pressed():
     select()
 
 # system event handlers
-controller_1.buttonL2.pressed(L2_press)
-controller_1.buttonL2.released(L2_release)
-controller_1.buttonL1.pressed(L1_press)
-controller_1.buttonL1.released(L1_release)
-controller_1.buttonUp.pressed(Up_pressed)
-controller_1.buttonR1.pressed(acorn_grab)
-controller_1.buttonR1.released(R1_released)
-controller_1.buttonR2.pressed(acorn_release)
-controller_1.buttonR2.released(R2_released)
-controller_1.buttonA.pressed(A_press)
-controller_1.buttonA.released(A_released)
+# controller_1.buttonL2.pressed(L2_press) > legacy
+
 controller_1.buttonX.pressed(push)
 controller_1.buttonX.released(X_released)
 brain.screen.pressed(brain_touch) 
@@ -507,6 +358,5 @@ competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.
 wait(15, MSEC)
 
-Thread(arm_fold)
-Thread(when_started1)
-Thread(acorn_distance)
+
+Thread(when_started1) # legacy; no use

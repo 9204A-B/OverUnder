@@ -1,0 +1,18 @@
+{
+	"project": {
+		"name": "OverUnder Arcade",
+		"slot": 1,
+		"description": "",
+		"platform": "V5",
+		"creationDate": "Wed, 01 Nov 2023 18:33:06 GMT",
+		"language": "python",
+		"python": {
+			"main": "\\src\\main.py"
+		},
+		"sdkVersion": "V5_1_0_1_15"
+	},
+	"extension": {
+		"version": "0.5.0",
+		"json": 1
+	}
+}

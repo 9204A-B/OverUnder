@@ -15,7 +15,7 @@ left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
 right_motor_a = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
 right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
-drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 4, 12, 10, INCHES, 1)
+drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.185798, 317.5, 254, MM, 1)
 intake = Motor(Ports.PORT3, GearSetting.RATIO_6_1, False)
 left_pusher = DigitalOut(brain.three_wire_port.g)
 right_pusher = DigitalOut(brain.three_wire_port.h)
@@ -111,18 +111,73 @@ bottom = False
 # change pusher commands to commands for both left and right pushers
 
 def auton():
-    global selector
-    drivetrain.set_drive_velocity(100, PERCENT)
+    global selector, auto
+    auto = True
+    drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
+    top_arm_joint.set_max_torque(100, PERCENT)
+    top_arm_joint.set_velocity(25, PERCENT)
+    bottom_arm_joint.set_max_torque(100, PERCENT)
+    bottom_arm_joint.set_velocity(25, PERCENT)
+    top_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.spin_for(REVERSE, .5, SECONDS) #Lift intake to drop arm
     if selector == 0: # Near side with hanging pole touch
+        wait(100, MSEC)
+        acorn_grab()
         left_pusher.set(True)
-        drivetrain.drive_for(FORWARD, 17.5, INCHES)
-        wait (250, MSEC)
+        drivetrain.drive_for(FORWARD, 18, INCHES)
         left_pusher.set(False)
-        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.turn_for(RIGHT, 30, DEGREES)
+        drivetrain.drive_for(FORWARD, 9, INCHES)
+        acorn_release()
+        wait(200, MSEC)
+        drivetrain.drive_for(FORWARD, 2.5, INCHES)
+        acorn_release()
+        wait(200, MSEC)
+        drivetrain.drive_for(FORWARD, 1, INCHES)
+        drivetrain.drive_for(REVERSE, 8, INCHES)
+        drivetrain.turn_for(LEFT, 30, DEGREES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(LEFT, 30, DEGREES)
+        drivetrain.drive_for(REVERSE, 40, INCHES)
+        bottom_arm_joint.spin_for(REVERSE, 35, DEGREES)
+        top_arm_joint.spin_for(REVERSE, 10, DEGREES)
+    elif selector == 1: # Far side with hanging pole touch
+        drivetrain.drive_for(FORWARD, 17, INCHES)
+        drivetrain.turn_for(LEFT, 45, DEGREES)
         drivetrain.drive_for(FORWARD, 5, INCHES)
-        acorn_release() # update?
+        acorn_release()
+        wait (200, MSEC)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(LEFT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 11, INCHES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        drivetrain.set_turn_velocity(25, PERCENT)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 32, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        acorn_grab()
+        drivetrain.drive_for(FORWARD, 32, INCHES)
+        drivetrain.turn_for(RIGHT, 100, DEGREES)
+        acorn_release()
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.drive_for(FORWARD, 20, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 50, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 30, INCHES)
+        left_pusher.set(True)
+    elif selector == 2:# Near side without hang
+        drivetrain.set_drive_velocity(100, PERCENT)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        drivetrain.drive_for(FORWARD, 17.5, INCHES)
+        drivetrain.turn_for(RIGHT, 45, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        acorn_release()
         wait (200, MSEC)
         drivetrain.drive_for(FORWARD, 4, INCHES)
         drivetrain.drive_for(REVERSE, 6, INCHES)
@@ -133,94 +188,42 @@ def auton():
         drivetrain.turn_for(RIGHT, 115, DEGREES)
         drivetrain.drive_for(REVERSE, 6, INCHES)
         left_pusher.set(False)
+        drivetrain.turn_for(RIGHT, 125, DEGREES)
+        drivetrain.drive_for(REVERSE, 6, INCHES)
+        left_pusher.set(False)
         wait(150, MSEC)
         drivetrain.turn_for(RIGHT, 250, DEGREES)
-        drivetrain.drive_for(FORWARD, 8, INCHES)
-        drivetrain.turn_for(RIGHT, 75, DEGREES)
-        drivetrain.drive_for(FORWARD, 11.25, INCHES)
-        drivetrain.turn_for(LEFT, 73.5, DEGREES)
+    elif selector == 3: # Far side without hang
+        drivetrain.drive_for(FORWARD, 17, INCHES)
+        drivetrain.turn_for(LEFT, 45, DEGREES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        acorn_release()
+        wait (200, MSEC)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+        drivetrain.drive_for(REVERSE, 10, INCHES)
+        drivetrain.turn_for(LEFT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 11, INCHES)
+        drivetrain.drive_for(FORWARD, 5, INCHES)
+        drivetrain.set_turn_velocity(25, PERCENT)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        drivetrain.drive_for(FORWARD, 32, INCHES)
+        drivetrain.turn_for(RIGHT, 90, DEGREES)
+        acorn_grab()
+        drivetrain.drive_for(FORWARD, 32, INCHES)
+        drivetrain.turn_for(RIGHT, 100, DEGREES)
+        drivetrain.set_turn_velocity(35, PERCENT)
+        acorn_release()
+        drivetrain.drive_for(FORWARD, 20, INCHES)
+        drivetrain.drive_for(REVERSE, 5, INCHES)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        acorn_grab()
         drivetrain.drive_for(FORWARD, 25, INCHES)
-        left_pusher.set(True)
-    # elif selector == 1: # Far side with hanging pole touch
-    #     drivetrain.drive_for(FORWARD, 17, INCHES)
-    #     drivetrain.turn_for(LEFT, 45, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     acorn_release()
-    #     wait (200, MSEC)
-    #     drivetrain.drive_for(FORWARD, 10, INCHES)
-    #     drivetrain.drive_for(REVERSE, 10, INCHES)
-    #     drivetrain.turn_for(LEFT, 180, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 11, INCHES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     drivetrain.set_turn_velocity(25, PERCENT)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     acorn_grab()
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 100, DEGREES)
-    #     acorn_release()
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     drivetrain.drive_for(FORWARD, 20, INCHES)
-    #     drivetrain.drive_for(REVERSE, 10, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 50, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 30, INCHES)
-    #     arm.set(True)
-    # elif selector == 2:# Near side without hang
-    #     drivetrain.set_drive_velocity(100, PERCENT)
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     drivetrain.drive_for(FORWARD, 17.5, INCHES)
-    #     drivetrain.turn_for(RIGHT, 45, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     acorn_release()
-    #     wait (200, MSEC)
-    #     drivetrain.drive_for(FORWARD, 4, INCHES)
-    #     drivetrain.drive_for(REVERSE, 6, INCHES)
-    #     drivetrain.turn_for(RIGHT, 180, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 4, INCHES)
-    #     drivetrain.turn_for(RIGHT, 10, DEGREES)
-    #     arm.set(True)
-    #     drivetrain.turn_for(RIGHT, 115, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 6, INCHES)
-    #     arm.set(False)
-    #     drivetrain.turn_for(RIGHT, 125, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 6, INCHES)
-    #     arm.set(False)
-    #     wait(150, MSEC)
-    #     drivetrain.turn_for(RIGHT, 250, DEGREES)
-    # elif selector == 3: # Far side without hang
-    #     drivetrain.drive_for(FORWARD, 17, INCHES)
-    #     drivetrain.turn_for(LEFT, 45, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     acorn_release()
-    #     wait (200, MSEC)
-    #     drivetrain.drive_for(FORWARD, 10, INCHES)
-    #     drivetrain.drive_for(REVERSE, 10, INCHES)
-    #     drivetrain.turn_for(LEFT, 180, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 11, INCHES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     drivetrain.set_turn_velocity(25, PERCENT)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     acorn_grab()
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 100, DEGREES)
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     acorn_release()
-    #     drivetrain.drive_for(FORWARD, 20, INCHES)
-    #     drivetrain.drive_for(REVERSE, 5, INCHES)
-    #     drivetrain.turn_for(RIGHT, 180, DEGREES)
-    #     acorn_grab()
-    #     drivetrain.drive_for(FORWARD, 25, INCHES)
-    #     drivetrain.drive_for(REVERSE, 5, INCHES)
-    #     drivetrain.turn_for(LEFT, 180, DEGREES)
-    #     acorn_release()
-    #     drivetrain.drive_for(FORWARD, 25, INCHES)
-    #     drivetrain.drive_for(REVERSE, 5, INCHES)
-    # else: # Programming skills
+        drivetrain.drive_for(REVERSE, 5, INCHES)
+        drivetrain.turn_for(LEFT, 180, DEGREES)
+        acorn_release()
+        drivetrain.drive_for(FORWARD, 25, INCHES)
+        drivetrain.drive_for(REVERSE, 5, INCHES)
+    #else: # Programming skills
     #     drivetrain.set_stopping(BRAKE)
     #     drivetrain.set_turn_velocity(35, PERCENT)
     #     drivetrain.set_drive_velocity(100, PERCENT)
@@ -290,6 +293,10 @@ def select():
     wait (10, MSEC)
 
 def drive():
+    global auto
+    auto = False
+    left_pusher.set(False)
+    right_pusher.set(False)
     timer = Timer()
     while not timer.time(SECONDS) == 75:
         pass
@@ -320,9 +327,9 @@ def acorn_distance():
             intake.stop()
             wait (20, MSEC)
 
-def arm_fold(): # default is reverse
-    global c, top, bottom
-    while True:
+def arm_fold(): # default is reverse 
+    global c, top, bottom, auto
+    while True and not auto: # This caused me pain trying to find out why auto broken
         if top:
             if c == 0:
                 top_arm_joint.spin(REVERSE)
@@ -412,25 +419,38 @@ def R1_released():
         x = 0
         wait(5, MSEC)
 
-def push():
-    global pusher
+def X_push(): # combine functionality of push() and X_release()
+    global pusher # starts at 0
     if pusher == 0:
+        pusher = pusher + 1
         left_pusher.set(True)
         right_pusher.set(True)
         wait(5, MSEC)
     elif pusher == 1:
+        pusher = pusher - 1
         left_pusher.set(False)
         right_pusher.set(False)
         wait(5, MSEC)
+
+#def push():
+#    global pusher
+#    if pusher == 0:
+#        left_pusher.set(True)
+#        right_pusher.set(True)
+#        wait(5, MSEC)
+#    elif pusher == 1:
+#        left_pusher.set(False)
+#        right_pusher.set(False)
+#        wait(5, MSEC)
     
-def X_release():
-    global pusher
-    if pusher == 0:
-        pusher = 1
-        wait(5, MSEC)
-    else:
-        pusher = 0
-        wait(5, MSEC)
+#def X_release():
+#    global pusher
+#    if pusher == 0:
+#        pusher = 1
+#        wait(5, MSEC)
+#    else:
+#        pusher = 0
+#        wait(5, MSEC)
 
 def A_press():
     global p
@@ -505,8 +525,9 @@ controller_1.buttonR2.pressed(acorn_release)
 controller_1.buttonR2.released(R2_released)
 controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_released)
-controller_1.buttonX.pressed(push)
-controller_1.buttonX.released(X_release)
+controller_1.buttonX.pressed(X_push)
+# controller_1.buttonX.pressed(push)
+# controller_1.buttonX.released(X_release)
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)

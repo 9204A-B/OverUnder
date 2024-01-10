@@ -79,6 +79,11 @@ Note: not adjusted to design of B Team bot! No .vscode settings copied, so recom
 
 ### 12/13
 * Edited Walls to be individually controlled using X and Y
+
+### 1/5/2024
+* Edited autons to work with new program (untested)
+* Updated pusher code
+
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

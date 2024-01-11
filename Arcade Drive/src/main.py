@@ -107,6 +107,7 @@ auto = False
 top = False
 bottom = False
 piston = False
+allow_piston = False
 
 # to update auton
 # change arm commands to left_pusher commands
@@ -299,6 +300,7 @@ def drive():
     controller_1.screen.set_cursor(1, 1)
     controller_1.rumble("..--")
     controller_1.screen.print("30 seconds left")
+    allow_piston = True
 
 def when_started1():
     top_arm_joint.set_max_torque(100, PERCENT)
@@ -496,13 +498,14 @@ def button_pressed():
     select()
 
 def Y_piston():
-    global piston
-    if piston == 0:
-        digital_out_e.set(True)
-        piston = 1
-    else:
-        digital_out_e.set(False)
-        piston = 0
+    global piston, allow_piston
+    if allow_piston:
+        if piston == 0:
+            digital_out_e.set(True)
+            piston = 1
+        else:
+            digital_out_e.set(False)
+            piston = 0
 
 # system event handlers
 controller_1.buttonL2.pressed(L2_press)

@@ -21,6 +21,7 @@ left_pusher = DigitalOut(brain.three_wire_port.g)
 right_pusher = DigitalOut(brain.three_wire_port.h)
 acorn_sense = Distance(Ports.PORT4)
 Auton_select = DigitalIn(brain.three_wire_port.f)
+digital_out_e = DigitalOut(brain.three_wire_port.e)
 drivetrain.set_stopping(BRAKE)
 
 wait(30, MSEC)
@@ -105,6 +106,7 @@ selector = 0
 auto = False
 top = False
 bottom = False
+piston = False
 
 # to update auton
 # change arm commands to left_pusher commands
@@ -493,6 +495,15 @@ def button_pressed():
         wait (5, MSEC)
     select()
 
+def Y_piston():
+    global piston
+    if piston == 0:
+        digital_out_e.set(True)
+        piston = 1
+    else:
+        digital_out_e.set(False)
+        piston = 0
+
 # system event handlers
 controller_1.buttonL2.pressed(L2_press)
 controller_1.buttonL2.released(L2_release)
@@ -507,6 +518,7 @@ controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_released)
 controller_1.buttonX.pressed(push)
 controller_1.buttonX.released(X_release)
+controller_1.buttonY.pressed(Y_piston)
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)

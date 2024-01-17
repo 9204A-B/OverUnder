@@ -131,20 +131,21 @@ def auton():
         acorn_grab()
         left_pusher.set(True)
         drivetrain.drive_for(FORWARD, 18, INCHES)
+        wait(250, MSEC)
         left_pusher.set(False)
         drivetrain.turn_for(RIGHT, 30, DEGREES)
         drivetrain.drive_for(FORWARD, 9, INCHES)
         acorn_release()
         wait(200, MSEC)
-        drivetrain.drive_for(FORWARD, 2.5, INCHES)
+        drivetrain.drive_for(FORWARD, 3, INCHES)
         acorn_release()
         wait(200, MSEC)
         drivetrain.drive_for(FORWARD, 1, INCHES)
         drivetrain.drive_for(REVERSE, 8, INCHES)
         drivetrain.turn_for(LEFT, 30, DEGREES)
         drivetrain.drive_for(REVERSE, 10, INCHES)
-        drivetrain.turn_for(LEFT, 30, DEGREES)
-        drivetrain.drive_for(REVERSE, 40, INCHES)
+        drivetrain.turn_for(LEFT, 35, DEGREES)
+        drivetrain.drive_for(REVERSE, 43, INCHES)
         bottom_arm_joint.spin_for(REVERSE, 35, DEGREES)
         top_arm_joint.spin_for(REVERSE, 10, DEGREES)    # elif selector == 2:# Near side without hang
     #     drivetrain.set_drive_velocity(100, PERCENT)
@@ -269,6 +270,7 @@ def select():
 
 def drive():
     global allow_piston
+    drivetrain.set_drive_velocity(100, PERCENT)
     timer = Timer()
     while not timer.time(SECONDS) == 75:
         pass

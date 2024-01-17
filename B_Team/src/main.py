@@ -9,15 +9,16 @@ brain=Brain()
 
 
 #Arm Punch Motor
-left_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
+punch = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
 
 controller_1 = Controller(PRIMARY)
+left_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
 left_motor_b = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
 right_motor_a = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
 right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
-drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 4, 12, 10, INCHES, 1)
+drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.185798, 368.3, 254, MM, 1)
 Auton_select = DigitalIn(brain.three_wire_port.f)
 drivetrain.set_stopping(BRAKE)
 
@@ -29,17 +30,17 @@ drivetrain_r_needs_to_be_stopped_controller_1 = False
 
 # define a task that will handle monitoring inputs from controller_1
 def rc_auto_loop_function_controller_1():
-    global drivetrain_l_needs_to_be_stopped_controller_1, drivetrain_r_needs_to_be_stopped_controller_1, remote_control_code_enabled
+    global drivetrain_l_needs_to_be_stopped_controller_1, drivetrain_r_needs_to_be_stopped_controller_1, remote_control_code_enabled, tank
     # process the controller input every 20 milliseconds
     # update the motors based on the input values
     while True:
         if remote_control_code_enabled:
             
             # calculate the drivetrain motor velocities from the controller joystick axies
-            # left = axis3 + axis1
-            # right = axis3 - axis1
-            drivetrain_left_side_speed = controller_1.axis3.position() + controller_1.axis1.position()
-            drivetrain_right_side_speed = controller_1.axis3.position() - controller_1.axis1.position()
+            # left = axis3
+            # right = axis2
+            drivetrain_left_side_speed = controller_1.axis3.position()
+            drivetrain_right_side_speed = controller_1.axis2.position()
             
             # check if the value is inside of the deadband range
             if drivetrain_left_side_speed < 5 and drivetrain_left_side_speed > -5:
@@ -353,11 +354,11 @@ def button_pressed():
 # system event handlers
 # controller_1.buttonL2.pressed(L2_press) > legacy
 
-controller_1.buttonX.pressed(push)
-controller_1.buttonX.released(X_released)
-brain.screen.pressed(brain_touch) 
-Auton_select.high(button_pressed)
-competition = Competition(drive, auton)
+# controller_1.buttonX.pressed(push)
+# controller_1.buttonX.released(X_released)
+# brain.screen.pressed(brain_touch) 
+# Auton_select.high(button_pressed)
+# competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.
 wait(15, MSEC)
 
@@ -380,17 +381,16 @@ R_"/button/" = When the button is released
 
 #Arm Punching function
 
-def P_X_Arm_Punch():
-    global IsPunching? = 1
-    while(IsPunching != 0):
-        left_motor_a.set_velocity(100, PERCENT)
-        
-        """IMPORTANT, BEFORE RUNNING CODE SET THE SLEEP FUNCTION TO THE PUNCH DURATION, YOU WILL BURN OUT MOTOR IF YOU DON"T sleep(5)"""
-        
-        left_motor_a.set_velocity(-100, PERCENT)
-        
-        
+def P_X_Arm_Punch():    
+    punch.set_velocity(100, PERCENT)
+    punch.spin(FORWARD)
+    
+    """IMPORTANT, BEFORE RUNNING CODE SET THE SLEEP FUNCTION TO THE PUNCH DURATION, YOU WILL BURN OUT MOTOR IF YOU DON"T sleep(5)""" 
 
 def R_X_Arm_Punch():
-    IsPunching? = 0
+     punch.set_velocity(0, PERCENT)
+     punch.stop()
+
+controller_1.buttonX.pressed(P_X_Arm_Punch)
+controller_1.buttonX.released(R_X_Arm_Punch)
     

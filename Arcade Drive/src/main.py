@@ -237,7 +237,7 @@ def auton():
         drivetrain.drive(FORWARD)
         wait(.25, SECONDS)
         drivetrain.stop()
-        flywheel.spin(FORWARD)
+        fly_wheel.spin(FORWARD)
         wait(30, SECONDS)
         fly_wheel.stop()
         drivetrain.set_turn_velocity(30, PERCENT)
@@ -313,6 +313,7 @@ def when_started1():
     intake.set_velocity(100, PERCENT)
     left_pusher.set(False)
     right_pusher.set(False)
+    ratchet.set(True)
     select()
         
 def acorn_distance():
@@ -500,7 +501,7 @@ def button_pressed():
 
 def Y_piston():
     global piston, allow_piston
-    if allow_piston:
+    if True: #Change True back to allow_piston after testing
         if piston == 0:
             ratchet.set(True)
             piston = 1

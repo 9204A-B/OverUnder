@@ -19,7 +19,6 @@ right_motor_a = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
 right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.185798, 368.3, 254, MM, 1)
-Auton_select = DigitalIn(brain.three_wire_port.f)
 drivetrain.set_stopping(BRAKE)
 
 wait(30, MSEC)
@@ -110,180 +109,20 @@ def auton():
     drivetrain.set_drive_velocity(100, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
-    # if selector == 0: # Near side with hanging pole touch
-    #     drivetrain.set_drive_velocity(100, PERCENT)
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     arm.set(True)
-    #     drivetrain.drive_for(FORWARD, 17.5, INCHES)
-    #     wait (250, MSEC)
-    #     arm.set(False)
-        # drivetrain.turn_for(RIGHT, 90, DEGREES)
-        # drivetrain.drive_for(FORWARD, 5, INCHES)
-        # acorn_release()
-        # wait (200, MSEC)
-        # drivetrain.drive_for(FORWARD, 4, INCHES)
-        # drivetrain.drive_for(REVERSE, 6, INCHES)
-        # drivetrain.turn_for(RIGHT, 180, DEGREES)
-        # drivetrain.drive_for(FORWARD, 4, INCHES)
-        # drivetrain.turn_for(RIGHT, 10, DEGREES)
-        # arm.set(True)
-        # drivetrain.turn_for(RIGHT, 115, DEGREES)
-        # drivetrain.drive_for(REVERSE, 6, INCHES)
-        # arm.set(False)
-        # wait(150, MSEC)
-        # drivetrain.turn_for(RIGHT, 250, DEGREES)
-        # drivetrain.drive_for(FORWARD, 8, INCHES)
-        # drivetrain.turn_for(RIGHT, 75, DEGREES)
-        # drivetrain.drive_for(FORWARD, 11.25, INCHES)
-        # drivetrain.turn_for(LEFT, 73.5, DEGREES)
-        # drivetrain.drive_for(FORWARD, 25, INCHES)
-        # arm.set(True)
-    # elif selector == 1: # Far side with hanging pole touch
-    #     drivetrain.drive_for(FORWARD, 17, INCHES)
-    #     drivetrain.turn_for(LEFT, 45, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     acorn_release()
-    #     wait (200, MSEC)
-    #     drivetrain.drive_for(FORWARD, 10, INCHES)
-    #     drivetrain.drive_for(REVERSE, 10, INCHES)
-    #     drivetrain.turn_for(LEFT, 180, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 11, INCHES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     drivetrain.set_turn_velocity(25, PERCENT)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     acorn_grab()
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 100, DEGREES)
-    #     acorn_release()
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     drivetrain.drive_for(FORWARD, 20, INCHES)
-    #     drivetrain.drive_for(REVERSE, 10, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 50, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 30, INCHES)
-    #     arm.set(True)
-    # elif selector == 2:# Near side without hang
-    #     drivetrain.set_drive_velocity(100, PERCENT)
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     drivetrain.drive_for(FORWARD, 17.5, INCHES)
-    #     drivetrain.turn_for(RIGHT, 45, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     acorn_release()
-    #     wait (200, MSEC)
-    #     drivetrain.drive_for(FORWARD, 4, INCHES)
-    #     drivetrain.drive_for(REVERSE, 6, INCHES)
-    #     drivetrain.turn_for(RIGHT, 180, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 4, INCHES)
-    #     drivetrain.turn_for(RIGHT, 10, DEGREES)
-    #     arm.set(True)
-    #     drivetrain.turn_for(RIGHT, 115, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 6, INCHES)
-    #     arm.set(False)
-    #     drivetrain.turn_for(RIGHT, 125, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 6, INCHES)
-    #     arm.set(False)
-    #     wait(150, MSEC)
-    #     drivetrain.turn_for(RIGHT, 250, DEGREES)
-    # elif selector == 3: # Far side without hang
-    #     drivetrain.drive_for(FORWARD, 17, INCHES)
-    #     drivetrain.turn_for(LEFT, 45, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     acorn_release()
-    #     wait (200, MSEC)
-    #     drivetrain.drive_for(FORWARD, 10, INCHES)
-    #     drivetrain.drive_for(REVERSE, 10, INCHES)
-    #     drivetrain.turn_for(LEFT, 180, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 11, INCHES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     drivetrain.set_turn_velocity(25, PERCENT)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     acorn_grab()
-    #     drivetrain.drive_for(FORWARD, 32, INCHES)
-    #     drivetrain.turn_for(RIGHT, 100, DEGREES)
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     acorn_release()
-    #     drivetrain.drive_for(FORWARD, 20, INCHES)
-    #     drivetrain.drive_for(REVERSE, 5, INCHES)
-    #     drivetrain.turn_for(RIGHT, 180, DEGREES)
-    #     acorn_grab()
-    #     drivetrain.drive_for(FORWARD, 25, INCHES)
-    #     drivetrain.drive_for(REVERSE, 5, INCHES)
-    #     drivetrain.turn_for(LEFT, 180, DEGREES)
-    #     acorn_release()
-    #     drivetrain.drive_for(FORWARD, 25, INCHES)
-    #     drivetrain.drive_for(REVERSE, 5, INCHES)
-    # else: # Programming skills
-    #     drivetrain.set_stopping(BRAKE)
-    #     drivetrain.set_turn_velocity(35, PERCENT)
-    #     drivetrain.set_drive_velocity(100, PERCENT)
-    #     drivetrain.drive_for(FORWARD, 12, INCHES)
-    #     drivetrain.turn_for(LEFT, 90, DEGREES)
-    #     drivetrain.set_drive_velocity(75, PERCENT)
-    #     drivetrain.drive(FORWARD)
-    #     wait(.25, SECONDS)
-    #     drivetrain.stop()
-    #     counter = 0
-    #     while counter < 46:
-    #         catapult.spin(FORWARD)
-    #         if catapult_sense.object_distance() <= 65:
-    #             counter += 1
-    #             catapult.spin(FORWARD)
-    #             wait (250, MSEC)
-    #             controller_1.screen.clear_screen()
-    #             controller_1.screen.set_cursor(1, 1)
-    #             controller_1.screen.print(counter)
-    #     catapult.stop()
-    #     drivetrain.set_turn_velocity(30, PERCENT)
-    #     drivetrain.set_drive_velocity(50, PERCENT)
-    #     drivetrain.turn_for(LEFT, 45, DEGREES)
-    #     drivetrain.drive_for(REVERSE, 14, INCHES)
-    #     drivetrain.turn_for(RIGHT, 90, DEGREES)
-    #     drivetrain.set_drive_velocity(100, PERCENT)
-    #     drivetrain.drive(REVERSE)
-    #     wait (2.25, SECONDS)
-    #     pushers.set(True)
-    #     drivetrain.turn_for(RIGHT, 135, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 40, INCHES)
-    #     drivetrain.turn_for(RIGHT, 45, DEGREES)
-    #     drivetrain.drive_for(FORWARD, 5, INCHES)
-    #     pushers.set(False)
-    #     drivetrain.drive_for(REVERSE, 5, INCHES)
+    if selector == 0:
+        drivetrain.drive_for(FORWARD, 25, INCHES)
+        drivetrain.drive_for(REVERSE, 7, INCHES)
+    # Legacy A Team Auton code removed - visible on original if need to see
+    
     
 def select():
     global selector
     if selector == 0:
-        brain.screen.print("Auton 1 Selected: Near side with hanging")
-        brain.screen.new_line()
-        brain.screen.print("pole touch")
-        brain.screen.new_line()
-        brain.screen.print("Press button to change Auton")
-    elif selector == 1:
-        brain.screen.print("Auton 2 Selected: Far side with hanging")
-        brain.screen.new_line()
-        brain.screen.print("pole touch")
-        brain.screen.new_line()
-        brain.screen.print("Press button to change Auton")
-    elif selector == 2:
-        brain.screen.print("Auton 3 Selected: Near side without hanging")
-        brain.screen.new_line()
-        brain.screen.print("pole touch")
-        brain.screen.new_line()
-        brain.screen.print("Press button to change Auton")
-    elif selector == 3:
-        brain.screen.print("Auton 4 Selected: Far side without hanging")
-        brain.screen.new_line()
-        brain.screen.print("pole touch")
-        brain.screen.new_line()
-        brain.screen.print("Press button to change Auton")
+        brain.screen.print("Only Auton Selected: Push")
     else:
-        brain.screen.print("Auton 5 Selected: Programming skills")
-        brain.screen.new_line()
-        brain.screen.print("Press button to change Auton")
+        brain.screen.print("BONUS Auton Selected: Programming Skills")
+
+    #old selector on A team code - find there if needed
     wait (10, MSEC)
 
 def drive():
@@ -334,6 +173,8 @@ def button_pressed():
     global selector
     brain.screen.clear_screen()
     brain.screen.set_cursor(1, 1)
+    # Only one auton program, so unneeded selection
+    """
     if selector == 0:
         selector = 1
         wait (5, MSEC)
@@ -349,20 +190,11 @@ def button_pressed():
     else:
         selector = 0
         wait (5, MSEC)
+    """
+    selector = 0
+    wait (5, MSEC)
     select()
 
-# system event handlers
-# controller_1.buttonL2.pressed(L2_press) > legacy
-
-# controller_1.buttonX.pressed(push)
-# controller_1.buttonX.released(X_released)
-# brain.screen.pressed(brain_touch) 
-# Auton_select.high(button_pressed)
-# competition = Competition(drive, auton)
-# add 15ms delay to make sure events are registered correctly.
-wait(15, MSEC)
-
-Thread(when_started1) # legacy; no use
 
 
 
@@ -384,13 +216,17 @@ R_"/button/" = When the button is released
 def P_X_Arm_Punch():    
     punch.set_velocity(100, PERCENT)
     punch.spin(FORWARD)
-    
-    """IMPORTANT, BEFORE RUNNING CODE SET THE SLEEP FUNCTION TO THE PUNCH DURATION, YOU WILL BURN OUT MOTOR IF YOU DON"T sleep(5)""" 
 
 def R_X_Arm_Punch():
      punch.set_velocity(0, PERCENT)
      punch.stop()
 
+# system event handlers
+brain.screen.pressed(brain_touch) 
+Auton_select.high(button_pressed) # Testing auton and competition
+competition = Competition(drive, auton)
+# add 15ms delay to make sure events are registered correctly.
+wait(15, MSEC)
 controller_1.buttonX.pressed(P_X_Arm_Punch)
 controller_1.buttonX.released(R_X_Arm_Punch)
     

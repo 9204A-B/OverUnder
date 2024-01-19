@@ -110,7 +110,9 @@ def auton():
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
     if selector == 0:
-        drivetrain.drive_for(FORWARD, 25, INCHES)
+        drivetrain.drive_for(FORWARD, 28, INCHES)
+        drivetrain.drive_for(REVERSE, 7, INCHES)
+        drivetrain.drive_for(FORWARD, 8, INCHES)
         drivetrain.drive_for(REVERSE, 7, INCHES)
     # Legacy A Team Auton code removed - visible on original if need to see
     

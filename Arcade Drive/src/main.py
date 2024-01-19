@@ -126,6 +126,8 @@ def auton():
     top_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.spin_for(REVERSE, .5, SECONDS) #Lift intake to drop arm
+    top_arm_joint.set_stopping(COAST)
+    bottom_arm_joint.set_stopping(COAST)
     if selector == 0: # Near side with hanging pole touch
         wait(100, MSEC)
         acorn_grab()
@@ -145,9 +147,10 @@ def auton():
         drivetrain.set_drive_velocity(75, PERCENT)
         drivetrain.drive_for(FORWARD, 1, INCHES)
         drivetrain.drive_for(REVERSE, 4, INCHES)
-        drivetrain.turn_for(RIGHT, 90, DEGREES)
-        drivetrain.drive_for(FORWARD, 38, INCHES)
-        drivetrain.turn_for(RIGHT, 45, DEGREES)
+        drivetrain.turn_for(RIGHT, 60, DEGREES)
+        drivetrain.drive_for(FORWARD, 40, INCHES)
+        drivetrain.turn_for(RIGHT, 27, DEGREES)
+        drivetrain.drive_for(FORWARD, 3, INCHES)
     elif selector == 1: # Far side with hanging pole touch
         drivetrain.drive_for(FORWARD, 17, INCHES)
         drivetrain.turn_for(LEFT, 45, DEGREES)
@@ -293,6 +296,8 @@ def select():
 
 def drive():
     global allow_piston
+    top_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.set_stopping(HOLD)
     drivetrain.set_drive_velocity(100, PERCENT)
     timer = Timer()
     while not timer.time(SECONDS) == 75:

@@ -223,7 +223,6 @@ def R_X_Arm_Punch():
 
 # system event handlers
 brain.screen.pressed(brain_touch) 
-Auton_select.high(button_pressed) # Testing auton and competition
 competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.
 wait(15, MSEC)

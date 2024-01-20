@@ -126,8 +126,8 @@ def auton():
     top_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.spin_for(REVERSE, .5, SECONDS) #Lift intake to drop arm
-    top_arm_joint.set_stopping(COAST)
-    bottom_arm_joint.set_stopping(COAST)
+    # top_arm_joint.set_stopping(COAST)
+    # bottom_arm_joint.set_stopping(COAST)
     if selector == 0: # Near side with hanging pole touch
         wait(100, MSEC)
         acorn_grab()

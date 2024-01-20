@@ -20,6 +20,7 @@ right_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.185798, 368.3, 254, MM, 1)
 drivetrain.set_stopping(BRAKE)
+Auton_select = DigitalIn(brain.three_wire_port.a)
 
 wait(30, MSEC)
 
@@ -110,17 +111,26 @@ def auton():
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
     if selector == 0:
-        drivetrain.drive_for(FORWARD, 28, INCHES)
-        drivetrain.drive_for(REVERSE, 7, INCHES)
-        drivetrain.drive_for(FORWARD, 8, INCHES)
-        drivetrain.drive_for(REVERSE, 7, INCHES)
+        drivetrain.drive_for(FORWARD, 15, INCHES)
+        drivetrain.turn_for(LEFT, 35, DEGREES)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
+    elif selector == 1:
+        drivetrain.drive_for(FORWARD, 15, INCHES)
+        drivetrain.turn_for(RIGHT, 35, DEGREES)
+        drivetrain.drive_for(FORWARD, 10, INCHES)
     # Legacy A Team Auton code removed - visible on original if need to see
     
     
 def select():
     global selector
     if selector == 0:
-        brain.screen.print("Only Auton Selected: Push")
+        brain.screen.print("Auton Selected: Turn Left")
+        brain.screen.new_line()
+        brain.screen.print("Press button to change Auton")
+    elif selector == 1:
+        brain.screen.print("Auton Selected: Turn Right")
+        brain.screen.new_line()
+        brain.screen.print("Press button to change Auton")
     else:
         brain.screen.print("BONUS Auton Selected: Programming Skills")
 
@@ -175,14 +185,13 @@ def button_pressed():
     global selector
     brain.screen.clear_screen()
     brain.screen.set_cursor(1, 1)
-    # Only one auton program, so unneeded selection
-    """
     if selector == 0:
         selector = 1
         wait (5, MSEC)
     elif selector == 1:
-        selector = 2
+        selector = 0
         wait (5, MSEC)
+    """
     elif selector == 2:
         selector = 3
         wait (5, MSEC)
@@ -193,7 +202,6 @@ def button_pressed():
         selector = 0
         wait (5, MSEC)
     """
-    selector = 0
     wait (5, MSEC)
     select()
 
@@ -230,4 +238,5 @@ competition = Competition(drive, auton)
 wait(15, MSEC)
 controller_1.buttonX.pressed(P_X_Arm_Punch)
 controller_1.buttonX.released(R_X_Arm_Punch)
+Auton_select.high(button_pressed)
     

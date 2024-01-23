@@ -147,10 +147,14 @@ def auton():
         drivetrain.set_drive_velocity(75, PERCENT)
         drivetrain.drive_for(FORWARD, 1, INCHES)
         drivetrain.drive_for(REVERSE, 4, INCHES)
-        drivetrain.turn_for(RIGHT, 60, DEGREES)
+        drivetrain.turn_for(RIGHT, 50, DEGREES)
         drivetrain.drive_for(FORWARD, 40, INCHES)
-        drivetrain.turn_for(RIGHT, 27, DEGREES)
-        drivetrain.drive_for(FORWARD, 3, INCHES)
+        bottom_arm_joint.set_stopping(HOLD)
+        top_arm_joint.set_stopping(HOLD)
+        bottom_arm_joint.spin_for(FORWARD, 380, DEGREES)
+        top_arm_joint.spin_for(FORWARD, 560, DEGREES)
+        drivetrain.turn_for(RIGHT, 200, DEGREES)
+        drivetrain.drive_for(REVERSE, 3, INCHES)
     elif selector == 1: # Far side with hanging pole touch
         wait(100, MSEC)
         acorn_grab()
@@ -220,6 +224,10 @@ def auton():
         drivetrain.drive(FORWARD)
         wait(.25, SECONDS)
         drivetrain.stop()
+        bottom_arm_joint.set_stopping(HOLD)
+        top_arm_joint.set_stopping(HOLD)
+        bottom_arm_joint.spin_for(FORWARD, 380, DEGREES)
+        top_arm_joint.spin_for(FORWARD, 1000, DEGREES)
         fly_wheel.spin(FORWARD)
         wait(30, SECONDS)
         fly_wheel.stop()
@@ -275,7 +283,8 @@ def select():
     wait (10, MSEC)
 
 def drive():
-    global allow_piston
+    global allow_piston, auto
+    auto = False
     top_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.set_stopping(HOLD)
     drivetrain.set_drive_velocity(100, PERCENT)
@@ -313,26 +322,28 @@ def acorn_distance():
 
 def arm_fold(): # default is reverse
     global c, top, bottom, auto
-    while True and not auto: # This caused me pain trying to find out why auton broken
-        if top:
-            if c == 0:
-                top_arm_joint.spin(REVERSE)
+    while True: # This caused me pain trying to find out why auton broken
+        if not auto:
+            if top:
+                if c == 0:
+                    top_arm_joint.spin(REVERSE)
+                else:
+                    top_arm_joint.spin(FORWARD)
             else:
-                top_arm_joint.spin(FORWARD)
-        else:
-            top_arm_joint.stop()
-            top_arm_joint.set_velocity(0, PERCENT)
-        if bottom:
-            if c == 0:
-                bottom_arm_joint.spin(REVERSE)
+                top_arm_joint.stop()
+                top_arm_joint.set_velocity(0, PERCENT)
+            if bottom:
+                if c == 0:
+                    bottom_arm_joint.spin(REVERSE)
+                else:
+                    bottom_arm_joint.spin(FORWARD)
             else:
-                bottom_arm_joint.spin(FORWARD)
-        else:
-            bottom_arm_joint.stop()
-            bottom_arm_joint.set_velocity(0, PERCENT) 
+                bottom_arm_joint.stop()
+                bottom_arm_joint.set_velocity(0, PERCENT) 
 
 def L1_press():
-    global top
+    global top, auto
+    auto = False
     top = True
     top_arm_joint.set_velocity(100, PERCENT)
 
@@ -343,7 +354,8 @@ def L1_release():
     top_arm_joint.set_velocity(0, PERCENT)
 
 def L2_press():
-    global bottom
+    global bottom, auto
+    auto = False
     bottom = True
     bottom_arm_joint.set_velocity(65, PERCENT)
 

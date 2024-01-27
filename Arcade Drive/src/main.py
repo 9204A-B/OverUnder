@@ -3,7 +3,6 @@ from vex import *
 import urandom #type: ignore
 
 brain=Brain()
-
 # Robot configuration code
 top_arm_joint = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
 bottom_arm_joint = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
@@ -104,17 +103,49 @@ c = 0
 acorn = False
 selector = 0
 auto = False
+manual = False
 top = False
 bottom = False
 piston = False
 allow_piston = False
+down = 0
 
 # to update auton
 # change arm commands to left_pusher commands
 # change pusher commands to commands for both left and right pushers
+def when_started1():
+    global auto
+    top_arm_joint.set_max_torque(100, PERCENT)
+    top_arm_joint.set_velocity(25, PERCENT)
+    bottom_arm_joint.set_max_torque(100, PERCENT)
+    bottom_arm_joint.set_velocity(25, PERCENT)
+    top_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.set_stopping(HOLD)
+    intake.set_velocity(100, PERCENT)
+    left_pusher.set(False)
+    right_pusher.set(False)
+    ratchet.set(True)
+    select()
+    auto = False
+
+def drive():
+    global allow_piston, auto
+    auto = False
+    top_arm_joint.set_stopping(HOLD)
+    bottom_arm_joint.set_stopping(HOLD)
+    drivetrain.set_drive_velocity(100, PERCENT)
+    timer = Timer()
+    while not timer.time(SECONDS) == 75:
+        pass
+    controller_1.screen.clear_screen()
+    controller_1.screen.set_cursor(1, 1)
+    controller_1.rumble("..--")
+    controller_1.screen.print("30 seconds left")
+    allow_piston = True
 
 def auton():
-    global selector, auto
+    global selector, auto, manual
+    manual = False
     auto = True
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
@@ -248,8 +279,7 @@ def auton():
         left_pusher.set(False)
         right_pusher.set(False)
         drivetrain.drive_for(REVERSE, 5, INCHES)
-    
-    
+
 def select():
     global selector
     if selector == 0:
@@ -282,34 +312,6 @@ def select():
         brain.screen.print("Press button to change Auton")
     wait (10, MSEC)
 
-def drive():
-    global allow_piston, auto
-    auto = False
-    top_arm_joint.set_stopping(HOLD)
-    bottom_arm_joint.set_stopping(HOLD)
-    drivetrain.set_drive_velocity(100, PERCENT)
-    timer = Timer()
-    while not timer.time(SECONDS) == 75:
-        pass
-    controller_1.screen.clear_screen()
-    controller_1.screen.set_cursor(1, 1)
-    controller_1.rumble("..--")
-    controller_1.screen.print("30 seconds left")
-    allow_piston = True
-
-def when_started1():
-    top_arm_joint.set_max_torque(100, PERCENT)
-    top_arm_joint.set_velocity(25, PERCENT)
-    bottom_arm_joint.set_max_torque(100, PERCENT)
-    bottom_arm_joint.set_velocity(25, PERCENT)
-    top_arm_joint.set_stopping(HOLD)
-    bottom_arm_joint.set_stopping(HOLD)
-    intake.set_velocity(100, PERCENT)
-    left_pusher.set(False)
-    right_pusher.set(False)
-    ratchet.set(True)
-    select()
-        
 def acorn_distance():
     global acorn
     while True:
@@ -320,10 +322,31 @@ def acorn_distance():
             intake.stop()
             wait (20, MSEC)
 
+def acorn_release():
+    global y, acorn
+    if y == 0:
+        acorn = False
+        intake.spin(REVERSE)
+        wait(5, MSEC)
+    elif y == 1:
+        intake.stop()
+        wait(5, MSEC)
+
+def acorn_grab():
+    global x, acorn
+    if x == 0:
+        acorn = True
+        intake.set_velocity(100, PERCENT)
+        intake.spin(FORWARD)
+        wait(5, MSEC)
+    elif x == 1:
+        intake.stop()
+        wait(5, MSEC)
+
 def arm_fold(): # default is reverse
-    global c, top, bottom, auto
-    while True: # This caused me pain trying to find out why auton broken
-        if not auto:
+    global c, top, bottom, auto, manual, down
+    while True:
+        if not auto and manual:
             if top:
                 if c == 0:
                     top_arm_joint.spin(REVERSE)
@@ -340,6 +363,34 @@ def arm_fold(): # default is reverse
             else:
                 bottom_arm_joint.stop()
                 bottom_arm_joint.set_velocity(0, PERCENT) 
+        elif not auto and not manual:
+            top_arm_joint.set_velocity(100, PERCENT)
+            bottom_arm_joint.set_velocity(100, PERCENT)
+            if top:
+                top_arm_joint.spin_for(REVERSE, 800, DEGREES)
+                wait(500, MSEC)
+                top_arm_joint.stop()
+                top_arm_joint.set_velocity(0, PERCENT)
+                top = False
+            if bottom:
+                bottom_arm_joint.spin_for(REVERSE, 380, DEGREES)
+                top_arm_joint.spin_for(REVERSE, 1000, DEGREES)
+                wait(500, MSEC)
+                top_arm_joint.stop()
+                top_arm_joint.set_velocity(0, PERCENT)
+                bottom_arm_joint.stop()
+                bottom_arm_joint.set_velocity(0, PERCENT)
+            if down == 1:
+                top_arm_joint.spin_for(FORWARD, 200, DEGREES)
+                top_arm_joint.set_stopping(BRAKE)
+                bottom_arm_joint.spin_for(FORWARD, 200, DEGREES)
+                bottom_arm_joint.set_stopping(BRAKE)
+                wait(250, MSEC)
+                top_arm_joint.set_stopping(HOLD)
+                bottom_arm_joint.set_stopping(HOLD)
+                down = 0
+                bottom = False
+                top = False
 
 def L1_press():
     global top, auto
@@ -348,10 +399,11 @@ def L1_press():
     top_arm_joint.set_velocity(100, PERCENT)
 
 def L1_release():
-    global top
-    top = False
-    top_arm_joint.stop()
-    top_arm_joint.set_velocity(0, PERCENT)
+    global top, manual
+    if manual:
+        top = False
+        top_arm_joint.stop()
+        top_arm_joint.set_velocity(0, PERCENT)
 
 def L2_press():
     global bottom, auto
@@ -360,31 +412,38 @@ def L2_press():
     bottom_arm_joint.set_velocity(65, PERCENT)
 
 def L2_release():
-    global bottom
-    bottom = False
-    bottom_arm_joint.set_velocity(0, PERCENT)
-    bottom_arm_joint.stop()
+    global bottom, manual
+    if manual:
+        bottom = False
+        bottom_arm_joint.set_velocity(0, PERCENT)
+        bottom_arm_joint.stop()
 
-def Up_pressed():
-    global c # default 0 (reverse)
+def Left_pressed():
+    global manual
     controller_1.screen.clear_screen()
     controller_1.screen.set_cursor(1, 1)
-    if c == 0:
+    if not manual:
+        manual = True
+        controller_1.screen.print("Arm is now manual")
+    else:
+        manual = False
+        controller_1.screen.print("Arm is automatic")
+
+def Up_pressed():
+    global c, manual # default 0 (reverse)
+    controller_1.screen.clear_screen()
+    controller_1.screen.set_cursor(1, 1)
+    if c == 0 and manual:
         c = 1
         controller_1.screen.print("Arm will go down")
-    else:
+    elif c == 1 and manual:
         c = 0
         controller_1.screen.print("Arm will go up")
 
-def acorn_release():
-    global y, acorn
-    if y == 0:
-        acorn = False
-        intake.spin(REVERSE)
-        wait(5, MSEC)
-    elif y == 1:
-        intake.stop()
-        wait(5, MSEC)
+def Y_pressed():
+    global manual, down
+    if not manual and down == 0:
+        down = 1
 
 def R2_released():
     global y, acorn
@@ -393,17 +452,6 @@ def R2_released():
         wait(5, MSEC)
     else:
         y = 0
-        wait(5, MSEC)
-
-def acorn_grab():
-    global x, acorn
-    if x == 0:
-        acorn = True
-        intake.set_velocity(100, PERCENT)
-        intake.spin(FORWARD)
-        wait(5, MSEC)
-    elif x == 1:
-        intake.stop()
         wait(5, MSEC)
 
 def R1_released():
@@ -426,7 +474,7 @@ def push():
         right_pusher.set(False)
         wait(5, MSEC)
     
-def X_release():
+def B_release():
     global pusher
     if pusher == 0:
         pusher = 1
@@ -444,7 +492,7 @@ def A_press():
     else:
         fly_wheel.stop()
 
-def A_released():
+def A_release():
     global p
     if p == 0:
         p = 1
@@ -496,7 +544,7 @@ def button_pressed():
         wait (5, MSEC)
     select()
 
-def Y_piston():
+def X_piston():
     global piston, allow_piston
     if True: #Change True back to allow_piston after testing
         if piston == 0:
@@ -507,20 +555,26 @@ def Y_piston():
             piston = 0
 
 # system event handlers
+#Trigger buttons
 controller_1.buttonL2.pressed(L2_press)
 controller_1.buttonL2.released(L2_release)
 controller_1.buttonL1.pressed(L1_press)
 controller_1.buttonL1.released(L1_release)
-controller_1.buttonUp.pressed(Up_pressed)
 controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)
 controller_1.buttonR2.pressed(acorn_release)
 controller_1.buttonR2.released(R2_released)
+# Direction buttons
+controller_1.buttonUp.pressed(Up_pressed)
+controller_1.buttonLeft.pressed(Left_pressed)
+# Letter buttons
 controller_1.buttonA.pressed(A_press)
-controller_1.buttonA.released(A_released)
-controller_1.buttonX.pressed(push)
-controller_1.buttonX.released(X_release)
-controller_1.buttonY.pressed(Y_piston)
+controller_1.buttonA.released(A_release)
+controller_1.buttonB.pressed(push)
+controller_1.buttonB.released(B_release)
+controller_1.buttonX.pressed(X_piston)
+controller_1.buttonY.pressed(Y_pressed)
+
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)
 competition = Competition(drive, auton)

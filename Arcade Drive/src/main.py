@@ -108,7 +108,7 @@ top = False
 bottom = False
 piston = False
 allow_piston = False
-down = 0
+full = False
 
 # to update auton
 # change arm commands to left_pusher commands
@@ -344,7 +344,7 @@ def acorn_grab():
         wait(5, MSEC)
 
 def arm_fold(): # default is reverse
-    global c, top, bottom, auto, manual, down
+    global c, auto, manual, full
     while True:
         if not auto and manual:
             top_arm_joint.set_velocity(100, PERCENT)
@@ -368,13 +368,14 @@ def arm_fold(): # default is reverse
         elif not auto and not manual:
             top_arm_joint.set_velocity(100, PERCENT)
             bottom_arm_joint.set_velocity(100, PERCENT)
-            if top:
-                top_arm_joint.spin_for(REVERSE, 800, DEGREES)
+            if controller_1.buttonL1.pressing():
+                top_arm_joint.spin_for(REVERSE, 500, DEGREES)
                 wait(500, MSEC)
                 top_arm_joint.stop()
                 top_arm_joint.set_velocity(0, PERCENT)
-                top = False
-            if bottom:
+                full = False
+            if controller_1.buttonL2.pressing():
+                full = True
                 bottom_arm_joint.spin_for(REVERSE, 380, DEGREES)
                 top_arm_joint.spin_for(REVERSE, 1000, DEGREES)
                 wait(500, MSEC)
@@ -382,17 +383,21 @@ def arm_fold(): # default is reverse
                 top_arm_joint.set_velocity(0, PERCENT)
                 bottom_arm_joint.stop()
                 bottom_arm_joint.set_velocity(0, PERCENT)
-            if down == 1:
-                top_arm_joint.spin_for(FORWARD, 200, DEGREES)
-                top_arm_joint.set_stopping(BRAKE)
-                bottom_arm_joint.spin_for(FORWARD, 200, DEGREES)
-                bottom_arm_joint.set_stopping(BRAKE)
-                wait(250, MSEC)
-                top_arm_joint.set_stopping(HOLD)
-                bottom_arm_joint.set_stopping(HOLD)
-                down = 0
-                bottom = False
-                top = False
+            if controller_1.buttonY.pressing():
+                if full:
+                    top_arm_joint.set_stopping(COAST)
+                    bottom_arm_joint.set_stopping(COAST)
+                    top_arm_joint.spin_for(FORWARD, 300, DEGREES)
+                    bottom_arm_joint.spin_for(FORWARD, 350, DEGREES)
+                    wait(500, MSEC)
+                    top_arm_joint.set_stopping(HOLD)
+                    bottom_arm_joint.set_stopping(HOLD)
+                    full = False
+                else:
+                    top_arm_joint.spin_for(FORWARD, 300, DEGREES)
+                    top_arm_joint.set_stopping(BRAKE)
+                    wait(250, MSEC)
+                    top_arm_joint.set_stopping(HOLD)
         wait(20, MSEC)
 
 def Left_pressed():
@@ -416,11 +421,6 @@ def Up_pressed():
     elif c == 1 and manual:
         c = 0
         controller_1.screen.print("Arm will go up")
-
-def Y_pressed():
-    global manual, down
-    if not manual and down == 0:
-        down = 1
 
 def R2_released():
     global y, acorn
@@ -546,7 +546,6 @@ controller_1.buttonA.released(A_release)
 controller_1.buttonB.pressed(push)
 controller_1.buttonB.released(B_release)
 controller_1.buttonX.pressed(X_piston)
-controller_1.buttonY.pressed(Y_pressed)
 
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)

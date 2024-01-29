@@ -347,7 +347,8 @@ def arm_fold(): # default is reverse
     global c, top, bottom, auto, manual, down
     while True:
         if not auto and manual:
-            if top:
+            top_arm_joint.set_velocity(100, PERCENT)
+            if controller_1.buttonL1.pressing():
                 if c == 0:
                     top_arm_joint.spin(REVERSE)
                 else:
@@ -355,7 +356,8 @@ def arm_fold(): # default is reverse
             else:
                 top_arm_joint.stop()
                 top_arm_joint.set_velocity(0, PERCENT)
-            if bottom:
+            if controller_1.buttonL2.pressing():
+                bottom_arm_joint.set_velocity(100, PERCENT)
                 if c == 0:
                     bottom_arm_joint.spin(REVERSE)
                 else:
@@ -391,32 +393,7 @@ def arm_fold(): # default is reverse
                 down = 0
                 bottom = False
                 top = False
-
-def L1_press():
-    global top, auto
-    auto = False
-    top = True
-    top_arm_joint.set_velocity(100, PERCENT)
-
-def L1_release():
-    global top, manual
-    if manual:
-        top = False
-        top_arm_joint.stop()
-        top_arm_joint.set_velocity(0, PERCENT)
-
-def L2_press():
-    global bottom, auto
-    auto = False
-    bottom = True
-    bottom_arm_joint.set_velocity(65, PERCENT)
-
-def L2_release():
-    global bottom, manual
-    if manual:
-        bottom = False
-        bottom_arm_joint.set_velocity(0, PERCENT)
-        bottom_arm_joint.stop()
+        wait(20, MSEC)
 
 def Left_pressed():
     global manual
@@ -556,10 +533,6 @@ def X_piston():
 
 # system event handlers
 #Trigger buttons
-controller_1.buttonL2.pressed(L2_press)
-controller_1.buttonL2.released(L2_release)
-controller_1.buttonL1.pressed(L1_press)
-controller_1.buttonL1.released(L1_release)
 controller_1.buttonR1.pressed(acorn_grab)
 controller_1.buttonR1.released(R1_released)
 controller_1.buttonR2.pressed(acorn_release)
@@ -584,4 +557,3 @@ wait(15, MSEC)
 Thread(arm_fold)
 Thread(when_started1)
 Thread(acorn_distance)
-

@@ -20,7 +20,6 @@ left_pusher = DigitalOut(brain.three_wire_port.g)
 right_pusher = DigitalOut(brain.three_wire_port.h)
 acorn_sense = Distance(Ports.PORT4)
 Auton_select = DigitalIn(brain.three_wire_port.f)
-ratchet = DigitalOut(brain.three_wire_port.e)
 drivetrain.set_stopping(BRAKE)
 
 wait(30, MSEC)
@@ -105,8 +104,6 @@ selector = 0
 manual = False
 top = False
 bottom = False
-piston = False
-allow_piston = False
 full = False
 timer = Timer()
 time_alert = False
@@ -126,12 +123,11 @@ def when_started1():
     intake.set_velocity(100, PERCENT)
     left_pusher.set(False)
     right_pusher.set(False)
-    ratchet.set(True)
     select()
     auto = False
 
 def drive():
-    global allow_piston, timer, time_alert
+    global timer, time_alert
     Thread(arm_fold)
     Thread(Screen)
     top_arm_joint.set_stopping(HOLD)
@@ -142,7 +138,6 @@ def drive():
         pass
     time_alert = True
     controller_1.rumble("..--")
-    allow_piston = True
 
 def auton():
     global selector, manual
@@ -521,24 +516,13 @@ def button_pressed():
         wait (5, MSEC)
     select()
 
-def X_piston():
-    global piston, allow_piston
-    if True: #Change True back to allow_piston after testing
-        if piston == 0:
-            ratchet.set(True)
-            piston = 1
-        else:
-            ratchet.set(False)
-            piston = 0
-
 def Screen():
-    global timer, time_alert, manual, down, arm_mode, automatic, piston, Lock
+    global timer, time_alert, manual, down, arm_mode, automatic
     while True:
         controller_1.screen.clear_screen()
         controller_1.screen.set_cursor(1, 1)
         arm_mode = "up"
         automatic = "automatic"
-        Lock = "closed"
         if time_alert:
             controller_1.screen.clear_screen()
             controller_1.screen.set_cursor(1, 1)
@@ -549,16 +533,12 @@ def Screen():
             arm_mode = "down"
         if manual:
             automatic = "manual"
-        if piston == 1:
-            Lock = "open"
         
         controller_1.screen.print("Time: " + str(timer))
         controller_1.screen.new_line()
         controller_1.screen.print("Arm will go " + arm_mode)
         controller_1.screen.new_line()
-        controller_1.screen.print("Arm is " + automatic)
-        controller_1.screen.new_line()
-        controller_1.screen.print("Pistons are " + Lock)
+        controller_1.screen.print("Arm is " + automatic)    
         wait(20, MSEC)
 
 # system event handlers
@@ -575,7 +555,6 @@ controller_1.buttonA.pressed(A_press)
 controller_1.buttonA.released(A_release)
 controller_1.buttonB.pressed(push)
 controller_1.buttonB.released(B_release)
-controller_1.buttonX.pressed(X_piston)
 
 brain.screen.pressed(brain_touch) 
 Auton_select.high(button_pressed)

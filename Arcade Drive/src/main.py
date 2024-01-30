@@ -102,13 +102,15 @@ p = 0
 c = 0
 acorn = False
 selector = 0
-auto = False
 manual = False
 top = False
 bottom = False
 piston = False
 allow_piston = False
 full = False
+timer = Timer()
+time_alert = False
+down = False
 
 # to update auton
 # change arm commands to left_pusher commands
@@ -129,24 +131,22 @@ def when_started1():
     auto = False
 
 def drive():
-    global allow_piston, auto
-    auto = False
+    global allow_piston, timer, time_alert
+    Thread(arm_fold)
+    Thread(Screen)
     top_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.set_stopping(HOLD)
     drivetrain.set_drive_velocity(100, PERCENT)
-    timer = Timer()
+    timer.clear()
     while not timer.time(SECONDS) == 75:
         pass
-    controller_1.screen.clear_screen()
-    controller_1.screen.set_cursor(1, 1)
+    time_alert = True
     controller_1.rumble("..--")
-    controller_1.screen.print("30 seconds left")
     allow_piston = True
 
 def auton():
-    global selector, auto, manual
+    global selector, manual
     manual = False
-    auto = True
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(35, PERCENT)
     drivetrain.set_stopping(BRAKE)
@@ -344,9 +344,9 @@ def acorn_grab():
         wait(5, MSEC)
 
 def arm_fold(): # default is reverse
-    global c, auto, manual, full
+    global c, manual, full, down
     while True:
-        if not auto and manual:
+        if manual:
             top_arm_joint.set_velocity(100, PERCENT)
             if controller_1.buttonL1.pressing():
                 if c == 0:
@@ -365,7 +365,7 @@ def arm_fold(): # default is reverse
             else:
                 bottom_arm_joint.stop()
                 bottom_arm_joint.set_velocity(0, PERCENT) 
-        elif not auto and not manual:
+        else:
             top_arm_joint.set_velocity(100, PERCENT)
             bottom_arm_joint.set_velocity(100, PERCENT)
             if controller_1.buttonL1.pressing():
@@ -384,6 +384,7 @@ def arm_fold(): # default is reverse
                 bottom_arm_joint.stop()
                 bottom_arm_joint.set_velocity(0, PERCENT)
             if controller_1.buttonY.pressing():
+                down = True
                 if full:
                     top_arm_joint.set_stopping(COAST)
                     bottom_arm_joint.set_stopping(COAST)
@@ -398,6 +399,7 @@ def arm_fold(): # default is reverse
                     top_arm_joint.set_stopping(BRAKE)
                     wait(250, MSEC)
                     top_arm_joint.set_stopping(HOLD)
+                down = False
         wait(20, MSEC)
 
 def Left_pressed():
@@ -406,21 +408,19 @@ def Left_pressed():
     controller_1.screen.set_cursor(1, 1)
     if not manual:
         manual = True
-        controller_1.screen.print("Arm is now manual")
     else:
         manual = False
-        controller_1.screen.print("Arm is automatic")
 
 def Up_pressed():
-    global c, manual # default 0 (reverse)
+    global c, manual, down # default 0 (reverse)
     controller_1.screen.clear_screen()
     controller_1.screen.set_cursor(1, 1)
     if c == 0 and manual:
         c = 1
-        controller_1.screen.print("Arm will go down")
+        down = True
     elif c == 1 and manual:
         c = 0
-        controller_1.screen.print("Arm will go up")
+        down = False
 
 def R2_released():
     global y, acorn
@@ -531,6 +531,36 @@ def X_piston():
             ratchet.set(False)
             piston = 0
 
+def Screen():
+    global timer, time_alert, manual, down, arm_mode, automatic, piston, Lock
+    while True:
+        controller_1.screen.clear_screen()
+        controller_1.screen.set_cursor(1, 1)
+        arm_mode = "up"
+        automatic = "automatic"
+        Lock = "closed"
+        if time_alert:
+            controller_1.screen.clear_screen()
+            controller_1.screen.set_cursor(1, 1)
+            controller_1.screen.print("30 seconds left!")
+            wait(500, MSEC)
+            time_alert = False
+        if down:
+            arm_mode = "down"
+        if manual:
+            automatic = "manual"
+        if piston == 1:
+            Lock = "open"
+        
+        controller_1.screen.print("Time: " + str(timer))
+        controller_1.screen.new_line()
+        controller_1.screen.print("Arm will go " + arm_mode)
+        controller_1.screen.new_line()
+        controller_1.screen.print("Arm is " + automatic)
+        controller_1.screen.new_line()
+        controller_1.screen.print("Pistons are " + Lock)
+        wait(20, MSEC)
+
 # system event handlers
 #Trigger buttons
 controller_1.buttonR1.pressed(acorn_grab)
@@ -553,6 +583,5 @@ competition = Competition(drive, auton)
 # add 15ms delay to make sure events are registered correctly.
 wait(15, MSEC)
 
-Thread(arm_fold)
 Thread(when_started1)
 Thread(acorn_distance)

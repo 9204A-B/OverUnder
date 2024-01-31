@@ -516,30 +516,36 @@ def button_pressed():
         wait (5, MSEC)
     select()
 
-def Screen():
-    global timer, time_alert, manual, down, arm_mode, automatic
+def screen_timer():
+    global timer, time_alert
+    minutes = 0
     while True:
-        controller_1.screen.clear_screen()
         controller_1.screen.set_cursor(1, 1)
-        arm_mode = "up"
-        automatic = "automatic"
         if time_alert:
             controller_1.screen.clear_screen()
-            controller_1.screen.set_cursor(1, 1)
             controller_1.screen.print("30 seconds left!")
-            wait(500, MSEC)
+            wait(1, SECONDS)
             time_alert = False
-        if down:
-            arm_mode = "down"
-        if manual:
-            automatic = "manual"
-        
-        controller_1.screen.print("Time: " + str(timer))
-        controller_1.screen.new_line()
-        controller_1.screen.print("Arm will go " + arm_mode)
-        controller_1.screen.new_line()
-        controller_1.screen.print("Arm is " + automatic)    
-        wait(20, MSEC)
+            Screen()
+        seconds = timer.time(SECONDS)
+        if seconds >= 60:
+            minutes += 1
+            seconds -= 60
+        controller_1.screen.print("Time: " + str(minutes) + ":" + str(seconds))
+        wait(1, SECONDS)
+
+def Screen():
+    global timer, time_alert, manual, down, arm_mode, automatic
+    arm_mode = "up"
+    automatic = "automatic"
+    if down:
+        arm_mode = "down"
+    if manual:
+        automatic = "manual"
+    controller_1.screen.set_cursor(2, 1)
+    controller_1.screen.print("Arm will go " + arm_mode)
+    controller_1.screen.set_cursor(3, 1)
+    controller_1.screen.print("Arm is " + automatic)    
 
 # system event handlers
 #Trigger buttons

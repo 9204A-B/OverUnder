@@ -104,10 +104,12 @@ selector = 0
 manual = False
 top = False
 bottom = False
-full = False
 timer = Timer()
 time_alert = False
 down = False
+printing = False
+minutes = 0
+seconds = 0
 
 # to update auton
 # change arm commands to left_pusher commands
@@ -128,8 +130,10 @@ def when_started1():
 
 def drive():
     global timer, time_alert
+    controller_1.screen.clear_screen()
     Thread(arm_fold)
-    Thread(Screen)
+    Thread(screen_timer)
+    Screen()
     top_arm_joint.set_stopping(HOLD)
     bottom_arm_joint.set_stopping(HOLD)
     drivetrain.set_drive_velocity(100, PERCENT)
@@ -252,11 +256,13 @@ def auton():
         drivetrain.stop()
         bottom_arm_joint.set_stopping(HOLD)
         top_arm_joint.set_stopping(HOLD)
-        bottom_arm_joint.spin_for(FORWARD, 380, DEGREES)
-        top_arm_joint.spin_for(FORWARD, 1000, DEGREES)
+        bottom_arm_joint.spin_for(REVERSE, 380, DEGREES)
+        top_arm_joint.spin_for(REVERSE, 1000, DEGREES)
         fly_wheel.spin(FORWARD)
         wait(30, SECONDS)
         fly_wheel.stop()
+        top_arm_joint.spin_to_position(20, DEGREES, False)
+        bottom_arm_joint.spin_to_position(20, DEGREES, False)
         drivetrain.set_turn_velocity(30, PERCENT)
         drivetrain.set_drive_velocity(50, PERCENT)
         drivetrain.turn_for(LEFT, 45, DEGREES)
@@ -339,11 +345,12 @@ def acorn_grab():
         wait(5, MSEC)
 
 def arm_fold(): # default is reverse
-    global c, manual, full, down
+    global c, manual, down
     while True:
         if manual:
             top_arm_joint.set_velocity(100, PERCENT)
             if controller_1.buttonL1.pressing():
+                Screen()
                 if c == 0:
                     top_arm_joint.spin(REVERSE)
                 else:
@@ -352,6 +359,7 @@ def arm_fold(): # default is reverse
                 top_arm_joint.stop()
                 top_arm_joint.set_velocity(0, PERCENT)
             if controller_1.buttonL2.pressing():
+                Screen()
                 bottom_arm_joint.set_velocity(100, PERCENT)
                 if c == 0:
                     bottom_arm_joint.spin(REVERSE)
@@ -364,13 +372,13 @@ def arm_fold(): # default is reverse
             top_arm_joint.set_velocity(100, PERCENT)
             bottom_arm_joint.set_velocity(100, PERCENT)
             if controller_1.buttonL1.pressing():
+                Screen()
                 top_arm_joint.spin_for(REVERSE, 500, DEGREES)
                 wait(500, MSEC)
                 top_arm_joint.stop()
                 top_arm_joint.set_velocity(0, PERCENT)
-                full = False
             if controller_1.buttonL2.pressing():
-                full = True
+                Screen()
                 bottom_arm_joint.spin_for(REVERSE, 380, DEGREES)
                 top_arm_joint.spin_for(REVERSE, 1000, DEGREES)
                 wait(500, MSEC)
@@ -379,43 +387,28 @@ def arm_fold(): # default is reverse
                 bottom_arm_joint.stop()
                 bottom_arm_joint.set_velocity(0, PERCENT)
             if controller_1.buttonY.pressing():
-                down = True
-                if full:
-                    top_arm_joint.set_stopping(COAST)
-                    bottom_arm_joint.set_stopping(COAST)
-                    top_arm_joint.spin_for(FORWARD, 300, DEGREES)
-                    bottom_arm_joint.spin_for(FORWARD, 350, DEGREES)
-                    wait(500, MSEC)
-                    top_arm_joint.set_stopping(HOLD)
-                    bottom_arm_joint.set_stopping(HOLD)
-                    full = False
-                else:
-                    top_arm_joint.spin_for(FORWARD, 300, DEGREES)
-                    top_arm_joint.set_stopping(BRAKE)
-                    wait(250, MSEC)
-                    top_arm_joint.set_stopping(HOLD)
-                down = False
+                top_arm_joint.spin_to_position(20, DEGREES, False)
+                bottom_arm_joint.spin_to_position(20, DEGREES, True)
         wait(20, MSEC)
 
 def Left_pressed():
     global manual
-    controller_1.screen.clear_screen()
-    controller_1.screen.set_cursor(1, 1)
     if not manual:
         manual = True
     else:
         manual = False
+    Screen()
 
 def Up_pressed():
-    global c, manual, down # default 0 (reverse)
-    controller_1.screen.clear_screen()
-    controller_1.screen.set_cursor(1, 1)
+    global c, manual, down # default 0 (reverse)    
     if c == 0 and manual:
         c = 1
         down = True
+        Screen()        
     elif c == 1 and manual:
         c = 0
         down = False
+        Screen()
 
 def R2_released():
     global y, acorn
@@ -517,35 +510,44 @@ def button_pressed():
     select()
 
 def screen_timer():
-    global timer, time_alert
-    minutes = 0
+    global timer, time_alert, printing, seconds, minutes
     while True:
-        controller_1.screen.set_cursor(1, 1)
-        if time_alert:
-            controller_1.screen.clear_screen()
-            controller_1.screen.print("30 seconds left!")
-            wait(1, SECONDS)
-            time_alert = False
-            Screen()
-        seconds = timer.time(SECONDS)
-        if seconds >= 60:
-            minutes += 1
-            seconds -= 60
-        controller_1.screen.print("Time: " + str(minutes) + ":" + str(seconds))
+        Time = "Time: " + str(minutes) + ":0" + str(seconds)
+        if not printing:
+            controller_1.screen.set_cursor(1, 1)
+            if time_alert:
+                controller_1.screen.clear_screen()
+                controller_1.screen.print("30 seconds left!")
+                wait(1, SECONDS)
+                time_alert = False
+                Screen()
+            if seconds > 9:
+                Time = "Time: " + str(minutes) + ":" + str(seconds)
+            if seconds >= 60:
+                minutes += 1
+                seconds = 0
+            controller_1.screen.clear_line(1)
+            controller_1.screen.print(Time)
+            controller_1.screen.clear_line(2)
+            controller_1.screen.set_cursor(2, 1)
+            controller_1.screen.print("Temps: " + str(math.trunc(bottom_arm_joint.temperature())) +
+                                       ", " + str(math.trunc(top_arm_joint.temperature())))
+        seconds += 1
         wait(1, SECONDS)
 
 def Screen():
-    global timer, time_alert, manual, down, arm_mode, automatic
-    arm_mode = "up"
-    automatic = "automatic"
-    if down:
-        arm_mode = "down"
-    if manual:
-        automatic = "manual"
-    controller_1.screen.set_cursor(2, 1)
-    controller_1.screen.print("Arm will go " + arm_mode)
+    global timer, time_alert, manual, down, arm, printing
+    printing = True
+    arm = "Arm: Automatic"
+    if manual and down:
+        arm ="Arm: Down"
+    if manual and not down:
+        arm = "Arm: Up"
     controller_1.screen.set_cursor(3, 1)
-    controller_1.screen.print("Arm is " + automatic)    
+    controller_1.screen.clear_line(3)
+    controller_1.screen.print(arm)
+    wait(20, MSEC)
+    printing = False
 
 # system event handlers
 #Trigger buttons

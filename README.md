@@ -79,6 +79,10 @@ Note: not adjusted to design of B Team bot! No .vscode settings copied, so recom
 
 ### 12/13
 * Edited Walls to be individually controlled using X and Y
+
+### 2/5
+* Archiving code as a template for next competition
+  
 ## Authors
 
 - [Logan Dresel](https://www.github.com/coollogan876)

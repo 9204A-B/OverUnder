@@ -82,6 +82,7 @@ Note: not adjusted to design of B Team bot! No .vscode settings copied, so recom
 
 ### 2/5
 * Archiving code as a template for next competition
+* Translated to C++ for better code organization (Average of 70 lines per file instead of the 600 lines in the python file)
   
 ## Authors
 
